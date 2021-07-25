@@ -118,15 +118,16 @@ export default function Navbar() {
                           >
                             <Menu.Item>
                               {({ active }) => (
-                                <a
-                                  href="#"
-                                  className={classNames(
-                                    active ? "bg-gray-100" : "",
-                                    "block px-4 py-2 text-sm text-gray-700"
-                                  )}
-                                >
-                                  Your Profile
-                                </a>
+                                <Link href="/profile">
+                                  <a
+                                    className={classNames(
+                                      active ? "bg-gray-100" : "",
+                                      "block px-4 py-2 text-sm text-gray-700"
+                                    )}
+                                  >
+                                    Your Profile
+                                  </a>
+                                </Link>
                               )}
                             </Menu.Item>
                             <Menu.Item>
@@ -165,18 +166,18 @@ export default function Navbar() {
                 <div className=" flex justify-end lg:w-0 items-center ">
                   <div>
                     <Link href="/auth/signin">
-                      <a className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-white">
+                      <a className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
                         Sign in
                       </a>
                     </Link>
                   </div>
-                  <div className="hidden md:block">
+                  {/* <div className="hidden md:block">
                     <Link href="/auth/signup">
                       <a className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
                         Sign up
                       </a>
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </div>

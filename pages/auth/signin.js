@@ -1,8 +1,22 @@
 import { useSession, getSession, providers, signIn } from "next-auth/client";
 import { LockClosedIcon } from "@heroicons/react/solid";
+import { useRouter } from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function signin() {
+  const router = useRouter();
   const [session, loading] = useSession();
+
+  //TODO: Replace with a better component or null
+  if (loading) return <h1>Loading....</h1>;
+
+  // ====== CHECK IF USER IS ALREADY LOGGED IN ======
+  if (session) {
+    router.push("/");
+  }
+
+  // ======= RENDER LOGIN PAGE =======
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -18,14 +32,26 @@ export default function signin() {
         </div>
         <div className="btn-wrapper text-center">
           <button
-            className="bg-white active:bg-gray-300 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
+            className="bg-white active:bg-gray-300 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center text-xs ease-linear transition-all duration-150"
             type="button"
+            onClick={() =>
+              signIn(
+                "facebook",
+                {
+                  callbackUrl: "/",
+                },
+                {}
+              )
+            }
           >
-            <img alt="..." className="w-5 mr-1" src="/img/github.svg" />
-            Github
+            {/* <div className="w-5 mr-1">
+              <FontAwesomeIcon icon={["fab", "github"]} />
+            </div> */}
+            <img alt="..." className="w-5 mr-1" src="/img/fb.svg" />
+            Facebook
           </button>
           <button
-            className="bg-white active:bg-gray-300 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
+            className="bg-white active:bg-gray-300 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center text-xs ease-linear transition-all duration-150"
             type="button"
             onClick={() => signIn("google", { callbackUrl: "/" })}
           >
@@ -50,22 +76,8 @@ export default function signin() {
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
               />
             </div>
           </div>
@@ -85,17 +97,10 @@ export default function signin() {
                 Remember me
               </label>
             </div>
-
-            <div className="text-sm">
-              <a
-                href="#"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Forgot your password?
-              </a>
-            </div>
+            <p className="text-right text-xs italic text-indigo-600">
+              Uses Secure Email verification
+            </p>
           </div>
-
           <div>
             <button
               type="submit"
@@ -114,12 +119,4 @@ export default function signin() {
       </div>
     </div>
   );
-}
-
-export async function getServerSideProps(context) {
-  return {
-    props: {
-      session: await getSession(context),
-    },
-  };
 }

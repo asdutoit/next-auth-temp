@@ -8,11 +8,11 @@ export default NextAuth({
   providers: [
     Providers.Email({
       server: {
-        host: "smtp.sendgrid.net",
-        port: 587,
+        host: process.env.EMAIL_SERVER,
+        port: process.env.EMAIL_PORT,
         auth: {
-          user: "apikey",
-          pass: "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",
+          user: process.env.EMAIL_AUTH_USER,
+          pass: process.env.EMAIL_AUTH_PASSWORD,
         },
       },
       from: process.env.EMAIL_FROM,
