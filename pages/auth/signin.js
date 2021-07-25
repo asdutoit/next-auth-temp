@@ -2,8 +2,9 @@ import { useSession, getSession, providers, signIn } from "next-auth/client";
 import { LockClosedIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getCsrfToken } from "next-auth/client";
 
-export default function signin() {
+export default function signin({ csrfToken }) {
   const router = useRouter();
   const [session, loading] = useSession();
 
@@ -63,8 +64,13 @@ export default function signin() {
           <p>or</p>
         </div>
         <hr />
-        <form className="mt-8 space-y-6" action="#" method="POST">
+        <form
+          className="mt-8 space-y-6"
+          action="/api/auth/signin/email"
+          method="POST"
+        >
           <input type="hidden" name="remember" defaultValue="true" />
+          <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email-address" className="sr-only">
@@ -119,4 +125,11 @@ export default function signin() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  const csrfToken = await getCsrfToken(context);
+  return {
+    props: { csrfToken },
+  };
 }
