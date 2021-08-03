@@ -1,3 +1,158 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    display: hidden;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #323e51;
+    border-radius: 10px;
+}
+
+/* .map-price-marker {
+    font-family: 'Helvetica';
+    left: -37px;
+    top: -25px;
+}
+.map-price-marker:before,
+.map-price-marker:after {
+    position: absolute;
+    content: '';
+    border-style: solid;
+}
+
+.map-price-marker:after {
+    left: 44px;
+    top: 23px;
+    border-width: 5px;
+    border-color: white transparent transparent;
+}
+
+.map-price-marker:before {
+    left: 43px;
+    top: 24px;
+    border-width: 6px;
+    border-color: white transparent transparent;
+}
+
+.map-price-marker.visited:hover {
+    background-color: #7b8d93;
+    color: #fff;
+    border-color: #5b6a6f;
+}
+
+.map-price-marker.visited:hover:after {
+    border-color: #7b8d93 transparent transparent;
+}
+
+.map-price-marker.visited:hover:before {
+    border-color: #5b6a6f transparent transparent;
+}
+
+.map-price-marker:hover {
+    background-color: #f2f2f2;
+    color: black;
+    border-color: gray;
+}
+
+.map-price-marker:hover:after {
+    border-color: #f2f2f2 transparent transparent;
+}
+
+.map-price-marker:hover:before {
+    border-color: gray transparent transparent;
+} */
+
+.map-price-marker {
+    left: -37px;
+    top: -25px;
+    width: max-content;
+    height: 20px;
+    line-height: 22px;
+    border: 1px solid gray;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.map-price-marker:before,
+.map-price-marker:after {
+    position: absolute;
+    content: '';
+    border-style: solid;
+}
+
+.map-price-marker:after {
+    left: 27px;
+    top: 18px;
+    border-width: 5px;
+    border-color: white transparent transparent;
+}
+
+.map-price-marker:before {
+    left: 26px;
+    top: 19px;
+    border-width: 6px;
+    border-color: gray transparent transparent;
+}
+
+.map-price-marker.visited:hover {
+    background-color: #7b8d93;
+    color: #fff;
+    border-color: #5b6a6f;
+}
+
+.map-price-marker.visited:hover:after {
+    border-color: #7b8d93 transparent transparent;
+}
+
+.map-price-marker.visited:hover:before {
+    border-color: #5b6a6f transparent transparent;
+}
+
+.map-price-marker:hover {
+    background-color: #f2f2f2;
+    color: black;
+    border-color: gray;
+    z-index: 3;
+}
+
+.map-price-marker:hover:after {
+    border-color: #f2f2f2 transparent transparent;
+}
+
+.map-price-marker:hover:before {
+    border-color: gray transparent transparent;
+}
+
+.marker-component-details {
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.8));
+}
+
+.marker-component-details:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+.my-element {
+    height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+    height: calc(var(--vh, 1vh) * 100);
+}
+
+.main-container {
+    height: calc(100vh - 64px);
+}
+
+@media only screen and (max-width: 1024px) {
+    .main-container {
+        height: calc(100vh - 170px);
+    }
+}
+@media only screen and (max-width: 1024px) {
+    .buy-rent {
+        overflow-y: hidden;
+    }
+}

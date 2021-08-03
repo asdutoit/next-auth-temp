@@ -1,5 +1,10 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
+import { connectToDatabase } from "../../../utils/mongodb";
+const bcrypt = require("bcrypt");
+const { ObjectId } = require("mongodb");
+
+const saltRounds = 10;
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -9,7 +14,7 @@ export default NextAuth({
     Providers.Email({
       server: {
         host: process.env.EMAIL_SERVER,
-        port: parseInt(process.env.EMAIL_PORT),
+        port: process.env.EMAIL_PORT,
         auth: {
           user: process.env.EMAIL_AUTH_USER,
           pass: process.env.EMAIL_AUTH_PASSWORD,
@@ -17,6 +22,60 @@ export default NextAuth({
       },
       from: process.env.EMAIL_FROM,
     }),
+    // Providers.Credentials({
+    //   name: "Credentials",
+    //   // ======== DETAILS FOR THE DEFAULT API FORM ========
+    //   credentials: {
+    //     username: {
+    //       label: "Email",
+    //       type: "text",
+    //       placeholder: "john.doe@testmail .com",
+    //     },
+    //     password: {
+    //       label: "Password",
+    //       type: "password",
+    //     },
+    //   },
+    //   async authorize(credentials, req) {
+    //     // Add logic here to look up the user from the credentials supplied
+    //     const { username, password } = credentials;
+    //     const { client } = await connectToDatabase();
+    //     const db = client.db(process.env.MONGODB_DB);
+    //     // ---- 1.  Check if user exists -----
+    //     let user = await db.collection("users").findOne({ email: username });
+
+    //     if (user && user.password) {
+    //       const match = await bcrypt.compare(password, user.password);
+    //       console.log("USER", user);
+    //       console.log("Match", match);
+    //       return user;
+    //     } else if (user) {
+    //       console.log("test");
+    //       let oauthuser = await db
+    //         .collection("accounts")
+    //         .findOne({ userId: ObjectId(user._id) });
+
+    //       if (oauthuser) {
+    //         console.log(oauthuser);
+    //         throw new Error(`${oauthuser.providerId}`);
+    //       }
+    //     } else {
+    //       return null;
+    //     }
+
+    //     // throw new Error("Password is incorrect");
+
+    //     // if (user) {
+    //     //   // Any object returned will be saved in `user` property of the JWT
+    //     // } else {
+    //     //   // If you return null or false then the credentials will be rejected
+    //     //   return null;
+    //     //   // You can also Reject this callback with an Error or with a URL:
+    //     //   // throw new Error('error message') // Redirect to error page
+    //     //   // throw '/path/to/redirect'        // Redirect to a URL
+    //     // }
+    //   },
+    // }),
     // Temporarily removing the Apple provider from the demo site as the
     // callback URL for it needs updating due to Vercel changing domains
     /*
@@ -45,7 +104,8 @@ export default NextAuth({
   // Notes:
   // * You must install an appropriate node_module for your database
   // * The Email provider requires a database (OAuth providers do not)
-  database: process.env.DATABASE_URL,
+  database: "mongodb://localhost:27017/testdb",
+  // database: process.env.DATABASE_URL,
 
   // The secret should be set to a reasonably long random string.
   // It is used to sign cookies and to sign and encrypt JSON Web Tokens, unless
@@ -87,9 +147,9 @@ export default NextAuth({
   // pages is not specified for that route.
   // https://next-auth.js.org/configuration/pages
   pages: {
-    // signIn: "/signin", // Displays signin buttons
+    signIn: "/auth/signin", // Displays signin buttons
     // signOut: '/auth/signout', // Displays form with sign out button
-    // error: '/auth/error', // Error code passed in query string as ?error=
+    error: "/auth/error", // Error code passed in query string as ?error=
     // verifyRequest: '/auth/verify-request', // Used for check email page
     // newUser: null, // If set, new users will be directed here on first sign in
   },
@@ -98,7 +158,9 @@ export default NextAuth({
   // when an action is performed.
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
-    // async signIn(user, account, profile) { return true },
+    async signIn(user, account, profile) {
+      return true;
+    },
     async redirect(url, baseUrl) {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
