@@ -1,16 +1,15 @@
-import React from 'react';
-import Image from 'next/image';
+import React, { memo } from 'react';
 import PhotoSlider from './PhotoSlider';
 import { numFormatter } from '../../utils/numFormatter';
 
-export default function ListCard({ property, setIsHighlighted }) {
+export default memo(function ListCard({ property, setIsHighlighted }) {
     const price = numFormatter(property.community.price_max);
 
     return (
         <div
-            className="relative w-320 h-230"
-            // style={{ height: '230px', width: 'auto' }}
+            className="relative w-320 h-290 transition duration-100 ease-in-out transform hover:scale-102 "
             key={property.property_id}
+            // FIXME: --- The following functions have an adverse affect on performance.  Optimize ---
             onMouseEnter={() =>
                 setIsHighlighted({
                     property_id: property.property_id,
@@ -28,8 +27,7 @@ export default function ListCard({ property, setIsHighlighted }) {
                 })
             }
         >
-            <div className="h-full relative w-full">
-                {console.log(property.photos)}
+            <div className="h-290">
                 <PhotoSlider photos={property.photos} />
             </div>
             <div
@@ -105,8 +103,7 @@ export default function ListCard({ property, setIsHighlighted }) {
                 </div>
 
                 <div className="text-white font-normal text-sm h-9">{`${property.address.line}, ${property.address.neighborhood_name}, ${property.address.city}, ${property.address.postal_code} `}</div>
-            </div>
+            </div>{' '}
         </div>
     );
-}
-// w-full md:w-1/2
+});

@@ -80,7 +80,7 @@ export default function buy({ properties }) {
                     isHighlighted={isHighlighted}
                 />
             </div>
-            <div className="h-430 flex-grow-0 relative overflow-scroll overflow-y-hidden mdxl:overflow-auto mdxl:h-full flex-col flex-nowrap mdxl:w-700 ">
+            <div className="h-550 flex-grow-0 relative overflow-scroll overflow-y-hidden mdxl:overflow-auto mdxl:h-full flex-col flex-nowrap mdxl:w-700 ">
                 <ListComponent
                     properties={properties}
                     setIsHighlighted={setIsHighlighted}
@@ -109,27 +109,12 @@ export async function getStaticProps() {
     };
 
     const response = await axios.request(options);
+    console.log(response.status);
+    console.log(response.statusText);
 
     return {
         props: {
             properties: response.data.properties,
         },
     };
-}
-
-{
-    /* <div className="grid grid-cols-12 h-full">
-                <div className="hidden sm:block sm:col-span-7 relative overflow-auto">
-                    <MapComponent2
-                        properties={properties}
-                        isHighlighted={isHighlighted}
-                    />
-                </div>
-                <div className="col-span-12 sm:col-span-5 overflow-auto">
-                    <ListComponent
-                        properties={properties}
-                        setIsHighlighted={setIsHighlighted}
-                    />
-                </div>
-            </div> */
 }

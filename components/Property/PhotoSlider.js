@@ -107,8 +107,9 @@ function PhotoSlider({ photos, rounded }) {
                 {photos.map((photo, i) => (
                     <Image
                         src={photo.href}
-                        width={320}
-                        height={230}
+                        layout="responsive"
+                        width="512"
+                        height="465"
                         key={i}
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''
