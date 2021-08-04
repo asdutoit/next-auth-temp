@@ -96,23 +96,3 @@ export default function MapCard({ data, layerProps = null }) {
         </div>
     );
 }
-
-{
-    /* <div className="bg-indigo-500 h-full relative rounded-lg w-full">
-                <PhotoSlider photos={data.photos} rounded="true" />
-            </div> */
-}
-
-{
-    /* <div
-                className=" text-white p-2 absolute bottom-0 w-full rounded-b-lg cursor-pointer marker-component-details"
-                onClick={() => {}}
-            >
-                <div className="flex justify-between">
-                    <div>Price</div>
-                    <div>Details</div>
-                </div>
-
-                <div>Address</div>
-            </div> */
-}
