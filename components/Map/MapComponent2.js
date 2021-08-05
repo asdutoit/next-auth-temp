@@ -161,12 +161,12 @@ export default function MapComponent2({
                                 lng={longitude}
                                 className="overflow-visible"
                                 data={cluster.data}
-                                onClick={() => {
-                                    // mapRef.current.panTo({
-                                    //     lat: latitude,
-                                    //     lng: longitude,
-                                    // });
-                                }}
+                                // onClick={() => {
+                                //     // mapRef.current.panTo({
+                                //     //     lat: latitude,
+                                //     //     lng: longitude,
+                                //     // });
+                                // }}
                             >
                                 {/* MARKER */}
                                 <MapMarker

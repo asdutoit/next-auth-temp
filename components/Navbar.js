@@ -23,7 +23,10 @@ export default function Navbar() {
     };
 
     return (
-        <Disclosure as="nav" className="bg-gray-100">
+        <Disclosure
+            as="nav"
+            className="bg-white w-full border-b border-gray-100"
+        >
             {({ open }) => (
                 <>
                     {/* <nav > */}

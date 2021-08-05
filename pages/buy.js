@@ -1,11 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import ListComponent from '../components/List/ListComponent';
-// import MapComponent from '../components/Map/MapComponent';
 import MapComponent2 from '../components/Map/MapComponent2';
-// import { useLoadScript, useGoogleMap } from '@react-google-maps/api';
 import axios from 'axios';
-
-// const libraries = ['places', 'geometry', 'drawing', 'visualization'];
+import { connectToDatabase } from '../utils/mongodb';
 
 const defaultProperty = {
     property_id: '',
@@ -47,31 +44,6 @@ export default function buy({ properties }) {
         }
     }, []);
 
-    // const onMapLoad = useCallback((map) => {
-    //     map.data.loadGeoJson('/chicago.json');
-    //     // map.data.addListener("click", showData);
-    //     mapRef.current = map;
-    //     setMap(map);
-    // }, []);
-
-    // const panTo = useCallback(({ lat, lng }) => {
-    //     mapRef.current.panTo({ lat, lng });
-    //     mapRef.current.setZoom(14);
-    // }, []);
-
-    // if (loadError) return 'Error loading maps';
-    // if (!isLoaded) return 'Loading maps';
-    let viewheight;
-    if (typeof window !== 'undefined') {
-        // browser code
-        viewheight = window.innerHeight;
-        window.addEventListener('resize', () => {
-            // We execute the same script as before
-            let vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-        });
-    }
-
     return (
         <div className="flex flex-col h-full mdxl:flex-row buy-rent ">
             <div className="flex-grow h-full overflow-auto relative">
@@ -90,31 +62,47 @@ export default function buy({ properties }) {
     );
 }
 
+// ======= UNCOMMENT FOR REAL API CALL ========
+// ============================================
+// export async function getStaticProps() {
+//     const options = {
+//         method: 'GET',
+//         url: 'https://realtor.p.rapidapi.com/properties/v2/list-for-rent',
+//         params: {
+//             city: 'New York City',
+//             state_code: 'NY',
+//             limit: '10',
+//             offset: '0',
+//             sort: 'relevance',
+//         },
+//         headers: {
+//             'x-rapidapi-key':
+//                 '9a83b48da5msh68c0186833d4b88p114873jsn9291b3278b3e',
+//             'x-rapidapi-host': 'realty-in-us.p.rapidapi.com',
+//         },
+//     };
+
+//     const response = await axios.request(options);
+
+//     return {
+//         props: {
+//             properties: response.data.properties,
+//         },
+//     };
+// }
+// ============================================
+
 export async function getStaticProps() {
-    const options = {
-        method: 'GET',
-        url: 'https://realtor.p.rapidapi.com/properties/v2/list-for-rent',
-        params: {
-            city: 'New York City',
-            state_code: 'NY',
-            limit: '10',
-            offset: '0',
-            sort: 'relevance',
-        },
-        headers: {
-            'x-rapidapi-key':
-                '9a83b48da5msh68c0186833d4b88p114873jsn9291b3278b3e',
-            'x-rapidapi-host': 'realty-in-us.p.rapidapi.com',
-        },
-    };
-
-    const response = await axios.request(options);
-    console.log(response.status);
-    console.log(response.statusText);
-
+    const { client } = await connectToDatabase();
+    const db = await client.db('HappyPropertiesTest');
+    const properties = await db
+        .collection('newyorksampleproperties')
+        .find({})
+        .sort({ metacritic: -1 })
+        .toArray();
     return {
         props: {
-            properties: response.data.properties,
+            properties: JSON.parse(JSON.stringify(properties)),
         },
     };
 }
