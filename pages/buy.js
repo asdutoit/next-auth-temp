@@ -64,10 +64,15 @@ export default function buy() {
     useEffect(() => {
         function updateFavs() {
             if (session) {
-                dispatch({
-                    type: 'FAV_UPDATE',
-                    payload: session.session.user.favouriteProperties,
-                });
+                console.log(session);
+                try {
+                    dispatch({
+                        type: 'FAV_UPDATE',
+                        payload: session.session.user.favouriteProperties,
+                    });
+                } catch (error) {
+                    console.log('an error occured in the /buy page');
+                }
             }
         }
         updateFavs();
