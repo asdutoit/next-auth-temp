@@ -10,7 +10,9 @@ import { UserContext } from '../../context/Context';
 
 const updater = async (propertyId) => {
     // Updates the user object
-    const res = await axios.post(`/api/property/${propertyId}/fav`);
+    const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/property/${propertyId}/fav`
+    );
     return res;
 };
 

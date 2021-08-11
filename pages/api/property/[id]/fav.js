@@ -29,11 +29,10 @@ export default async function handle(req, res) {
         let favExist;
 
         const favs = await db.collection('users').aggregate(agg).toArray();
+        console.log('in api/property/[id]/fav: ', favs);
         if (favs.length > 0) {
             if (favs[0].favouriteProperties?.length > 0) {
-                favExist = favs[0].favouriteProperties.some(
-                    (fav) => fav === id
-                );
+                favExist = favs[0].favouriteProperties.includes(id);
             }
         }
         if (favExist) {
