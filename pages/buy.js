@@ -1,8 +1,14 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import ListComponent from '../components/List/ListComponent';
 import MapComponent2 from '../components/Map/MapComponent2';
+// import { connectToDatabase } from '../utils/mongodb';
+import { isBrowser } from 'react-device-detect';
+// import { ObjectId } from 'mongodb';
+import { getsession, useSession } from 'next-auth/client';
+import { QueryClient, useQuery } from 'react-query';
+import { dehydrate } from 'react-query/hydration';
+import { UserContext } from '../context/Context';
 import axios from 'axios';
-import { connectToDatabase } from '../utils/mongodb';
 
 const defaultProperty = {
     property_id: '',
@@ -11,17 +17,30 @@ const defaultProperty = {
     price: '',
 };
 
-export default function buy({ properties }) {
-    // const { isLoaded, loadError } = useLoadScript({
-    //     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API,
-    //     libraries,
-    // });
-    // const mapRef = useRef();
-    // const mapsRef = useRef();
-    // const polygonRef = useRef();
-    const [map, setMap] = useState(null);
+const getProperties = () => {
+    return fetch(
+        `${
+            process.env.NEXTAUTH_URL ? process.env.NEXTAUTH_URL : ''
+        }/api/properties`
+    ).then((res) => res.json());
+};
+
+// getUserFavourites = () => {
+//     return axios.get();
+// };
+
+export default function buy() {
+    const [session, loading] = useSession();
+    const { state, dispatch } = useContext(UserContext);
+    const mapRef = useRef();
+    const mapsRef = useRef();
+    const polygonRef = useRef();
     const [currentLocation, setCurrentLocation] = useState(null);
     const [isHighlighted, setIsHighlighted] = useState(defaultProperty);
+    const { data } = useQuery('properties', getProperties, {
+        // staleTime: 5000,
+    });
+    const { properties } = data;
 
     useEffect(() => {
         const coords = JSON.parse(localStorage.getItem('coords'));
@@ -44,20 +63,38 @@ export default function buy({ properties }) {
         }
     }, []);
 
+    useEffect(() => {
+        function updateFavs() {
+            if (session) {
+                dispatch({
+                    type: 'FAV_UPDATE',
+                    payload: session.session.user.favouriteProperties,
+                });
+            }
+        }
+        updateFavs();
+    }, [loading]);
+
     return (
         <div className="flex flex-col h-full mdxl:flex-row buy-rent ">
             <div className="flex-grow h-full overflow-auto relative">
                 <MapComponent2
                     properties={properties}
                     isHighlighted={isHighlighted}
+                    mapRef={mapRef}
+                    mapsRef={mapsRef}
+                    polygonRef={polygonRef}
                 />
             </div>
-            <div className="h-550 flex-grow-0 relative overflow-scroll overflow-y-hidden mdxl:overflow-auto mdxl:h-full flex-col flex-nowrap mdxl:w-700 ">
-                <ListComponent
-                    properties={properties}
-                    setIsHighlighted={setIsHighlighted}
-                />
-            </div>
+            {isBrowser ? (
+                <div className="h-550 flex-grow-0 relative overflow-scroll overflow-y-hidden mdxl:overflow-auto mdxl:h-full flex-col flex-nowrap mdxl:w-700 ">
+                    <ListComponent
+                        properties={properties}
+                        setIsHighlighted={setIsHighlighted}
+                        mapRef={mapRef}
+                    />
+                </div>
+            ) : null}
         </div>
     );
 }
@@ -92,17 +129,31 @@ export default function buy({ properties }) {
 // }
 // ============================================
 
+// export async function getStaticProps() {
+//     const queryClient = new QueryClient();
+//     const { client } = await connectToDatabase();
+
+//     const db = await client.db('HappyPropertiesTest');
+//     const properties = await db
+//         .collection('newyorksampleproperties')
+//         .find({})
+//         .sort({ metacritic: -1 })
+//         .toArray();
+
+//     return {
+//         props: {
+//             properties: JSON.parse(JSON.stringify(properties)),
+//         },
+//     };
+// }
+
 export async function getStaticProps() {
-    const { client } = await connectToDatabase();
-    const db = await client.db('HappyPropertiesTest');
-    const properties = await db
-        .collection('newyorksampleproperties')
-        .find({})
-        .sort({ metacritic: -1 })
-        .toArray();
+    const queryClient = new QueryClient();
+    await queryClient.prefetchQuery('properties', getProperties);
+
     return {
         props: {
-            properties: JSON.parse(JSON.stringify(properties)),
+            dehydratedState: dehydrate(queryClient),
         },
     };
 }

@@ -12,6 +12,7 @@ function createMapOptions(maps) {
         mapTypeControl: true,
         scrollwheel: true,
         clickableIcons: false,
+        drawing: true,
     };
 }
 
@@ -21,9 +22,9 @@ const libraries = ['places', 'geometry', 'drawing', 'visualization'];
 const MarkerCluster = ({ children }) => children;
 
 export default function MapComponent2({
-    // mapRef,
-    // mapsRef,
-    // polygonRef,
+    mapRef,
+    mapsRef,
+    polygonRef,
     properties,
     isHighlighted,
 }) {
@@ -31,15 +32,12 @@ export default function MapComponent2({
     const [markers, setMarkers] = useState([]);
     const [bounds, setBounds] = useState(null);
     const [zoom, setZoom] = useState(10);
-    const [onMap, setOnMap] = useState(true);
+    const [isdragging, setIsdragging] = useState(false);
     const [value, setValue] = useLocalState('viewport', {
         lat: 24.701627,
         lng: -79.026432,
     });
 
-    const mapRef = useRef();
-    const mapsRef = useRef();
-    const polygonRef = useRef();
     const unClusteredProperties = [];
 
     useEffect(() => {
@@ -57,6 +55,11 @@ export default function MapComponent2({
         });
         setBounds([bounds.nw.lng, bounds.se.lat, bounds.se.lng, bounds.nw.lat]);
         setZoom(zoom);
+    };
+
+    const onMapLoad = ({ map, maps }) => {
+        mapRef.current = map;
+        mapsRef.current = maps;
     };
 
     const points = properties.map((property) => ({
@@ -107,15 +110,14 @@ export default function MapComponent2({
                 defaultCenter={default_center}
                 options={createMapOptions}
                 yesIWantToUseGoogleMapApiInternals
-                onGoogleApiLoaded={({ map, maps }) => {
-                    mapRef.current = map;
-                    mapsRef.current = maps;
-                }}
+                onGoogleApiLoaded={onMapLoad}
                 defaultZoom={8}
                 center={center}
                 onChange={({ center, zoom, bounds }) =>
                     onBoundsChanged(center, zoom, bounds)
                 }
+                onDrag={() => setIsdragging(true)}
+                onDragEnd={() => setIsdragging(false)}
             >
                 {/* ============= MARKERS ================ */}
                 {clusters.map((cluster) => {
@@ -161,11 +163,12 @@ export default function MapComponent2({
                                 lng={longitude}
                                 className="overflow-visible"
                                 data={cluster.data}
+                                isdragging={isdragging}
                                 // onClick={() => {
-                                //     // mapRef.current.panTo({
-                                //     //     lat: latitude,
-                                //     //     lng: longitude,
-                                //     // });
+                                //     mapRef.current.panTo({
+                                //         lat: latitude,
+                                //         lng: longitude,
+                                //     });
                                 // }}
                             >
                                 {/* MARKER */}

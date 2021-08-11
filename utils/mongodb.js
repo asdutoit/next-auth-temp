@@ -1,11 +1,11 @@
 import { MongoClient } from 'mongodb';
 import COLOR from './colors';
 
-const { DATABASE_URI, MONGODB_DB } = process.env;
+const { DATABASE_URL, MONGODB_DB } = process.env;
 
-if (!DATABASE_URI) {
+if (!DATABASE_URL) {
     throw new Error(
-        'Please define the DATABASE_URI environment variable inside .env.local'
+        'Please define the DATABASE_URL environment variable inside .env.local'
     );
 }
 
@@ -37,7 +37,7 @@ export async function connectToDatabase() {
             useUnifiedTopology: true,
         };
 
-        cached.promise = MongoClient.connect(DATABASE_URI, opts).then(
+        cached.promise = MongoClient.connect(DATABASE_URL, opts).then(
             (client) => {
                 return {
                     client,

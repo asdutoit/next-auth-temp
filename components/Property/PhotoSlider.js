@@ -7,10 +7,10 @@ function ChevronRight(props) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="cursor-pointer h-6 w-6 absolute right-2 top-28 bg-black bg-opacity-25 rounded-full p-1"
+            className="cursor-pointer h-6 w-6 absolute right-2 top-28 bg-white bg-opacity-95 rounded-full p-1"
             fill="none"
             viewBox="0 0 24 24"
-            stroke="white"
+            stroke="black"
             onClick={onClick}
         >
             <path
@@ -28,10 +28,10 @@ function ChevronLeft(props) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="cursor-pointer h-6 w-6 absolute top-28 left-2 z-10 bg-black bg-opacity-25 rounded-full p-1"
+            className="cursor-pointer h-6 w-6 absolute top-28 left-2 z-10 bg-white bg-opacity-95 rounded-full p-1"
             fill="none"
             viewBox="0 0 24 24"
-            stroke="white"
+            stroke="black"
             onClick={onClick}
         >
             <path
@@ -44,42 +44,6 @@ function ChevronLeft(props) {
     );
 }
 
-function SampleNextArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-        <ChevronRight
-            className={className}
-            style={{
-                ...style,
-                display: 'block',
-                color: 'white',
-                fontSize: '3em',
-                right: '9px',
-                zIndex: 30,
-            }}
-            onClick={onClick}
-        />
-    );
-}
-
-function SamplePrevArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-        <ChevronLeft
-            className={className}
-            style={{
-                ...style,
-                display: 'block',
-                color: 'white',
-                fontSize: '3em',
-                left: '9px',
-                zIndex: 30,
-            }}
-            onClick={onClick}
-        />
-    );
-}
-
 const settings = {
     dots: false,
     infinite: true,
@@ -88,7 +52,7 @@ const settings = {
     slidesToScroll: 1,
     nextArrow: <ChevronRight />,
     prevArrow: <ChevronLeft />,
-
+    swipe: false,
     appendDots: (dots) => (
         <div
             style={{
@@ -100,7 +64,7 @@ const settings = {
     ),
 };
 
-function PhotoSlider({ photos, rounded }) {
+function PhotoSlider({ photos, rounded = false }) {
     return (
         <div>
             <Slider {...settings}>
@@ -111,6 +75,8 @@ function PhotoSlider({ photos, rounded }) {
                         width="512"
                         height="465"
                         key={i}
+                        loading="eager"
+                        // priority="true"
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''
                         }`}

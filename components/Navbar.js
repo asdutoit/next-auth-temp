@@ -4,16 +4,13 @@ import { useRouter } from 'next/router';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 import { useSession, signOut, getSession } from 'next-auth/client';
+import { classNames } from '../utils/general';
 
 const navigation = [
     { name: 'Buy', href: '/buy', current: false },
     { name: 'Sell', href: '/sell', current: false },
     { name: 'Rent', href: '/rent', current: false },
 ];
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ');
-}
 
 export default function Navbar() {
     const router = useRouter();
@@ -87,7 +84,8 @@ export default function Navbar() {
                                                     handleClick(link)
                                                 }
                                                 className={classNames(
-                                                    router.asPath === link.href
+                                                    router.pathname ===
+                                                        link.href
                                                         ? 'bg-gray-900 text-white'
                                                         : 'text-gray-700 hover:bg-gray-700 hover:text-white',
                                                     'px-3 py-2 rounded-md text-sm font-medium'
@@ -115,8 +113,8 @@ export default function Navbar() {
                                                         <img
                                                             className="h-8 w-8 rounded-full"
                                                             src={
-                                                                session.user
-                                                                    .image
+                                                                session.session
+                                                                    .user.image
                                                             }
                                                             alt=""
                                                         />

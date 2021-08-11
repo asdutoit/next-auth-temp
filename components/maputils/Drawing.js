@@ -60,7 +60,7 @@ function Drawing({ mapRef, polygonRef, setMarkers }) {
 
         //move-listener
         // As the mouse moves, the coordinates are pushed to the poly variable
-        var move = window.google.maps.event.addListener(
+        let move = window.google.maps.event.addListener(
             map,
             'mousemove',
             function (e) {

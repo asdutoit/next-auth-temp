@@ -15,10 +15,12 @@ module.exports = {
                 cardviews: 'repeat(auto-fill, minmax(284px, 1fr))',
             },
             width: {
+                250: '250px',
                 320: '320px',
                 700: '700px',
             },
             height: {
+                150: '150px',
                 230: '230px',
                 290: '290px',
                 365: '365px',
