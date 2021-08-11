@@ -68,7 +68,7 @@ export default function buy() {
                 try {
                     dispatch({
                         type: 'FAV_UPDATE',
-                        payload: session.session.user.favouriteProperties,
+                        payload: session.user.favouriteProperties,
                     });
                 } catch (error) {
                     console.log('an error occured in the /buy page');

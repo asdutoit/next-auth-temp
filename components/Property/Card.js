@@ -51,9 +51,7 @@ export default memo(function Card({
             if (tempFav?.length > 2 && session) {
                 if (tempFav === property._id) {
                     const valid =
-                        session.session.user?.favouriteProperties?.includes(
-                            tempFav
-                        );
+                        session.user?.favouriteProperties?.includes(tempFav);
                     // 3.  If there are, do nothing.   If not, add to profile.
                     if (!valid) {
                         const res = await updater(tempFav);
