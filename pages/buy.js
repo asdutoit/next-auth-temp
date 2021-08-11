@@ -8,7 +8,6 @@ import { getsession, useSession } from 'next-auth/client';
 import { QueryClient, useQuery } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
 import { UserContext } from '../context/Context';
-import axios from 'axios';
 
 const defaultProperty = {
     property_id: '',
@@ -37,9 +36,10 @@ export default function buy() {
     const polygonRef = useRef();
     const [currentLocation, setCurrentLocation] = useState(null);
     const [isHighlighted, setIsHighlighted] = useState(defaultProperty);
-    const { data } = useQuery('properties', getProperties, {
+    const { isLoading, error, data } = useQuery('properties', getProperties, {
         // staleTime: 5000,
     });
+
     const { properties } = data;
 
     useEffect(() => {
@@ -74,6 +74,8 @@ export default function buy() {
         }
         updateFavs();
     }, [loading]);
+
+    if (isLoading) return 'Loading...';
 
     return (
         <div className="flex flex-col h-full mdxl:flex-row buy-rent ">
