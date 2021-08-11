@@ -10,6 +10,10 @@ import { UserContext } from '../../context/Context';
 
 const updater = async (propertyId) => {
     // Updates the user object
+    console.log(
+        'Card Updated: ',
+        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/property/${propertyId}/fav`
+    );
     const res = await axios.post(
         `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/property/${propertyId}/fav`
     );
@@ -81,7 +85,7 @@ export default memo(function Card({
                     console.log('res Card: ', res);
                     console.log(
                         'Card env: ',
-                        process.env.NEXT_PUBLIC_NEXTAUTH_URL
+                        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/property/${propertyId}/fav`
                     );
 
                     dispatch({
