@@ -173,7 +173,7 @@ export default NextAuth({
                 .find({ email: user.email })
                 .toArray();
 
-            session.user.favouriteProperties = user1[0]?.favouriteProperties;
+            user.favouriteProperties = user1[0]?.favouriteProperties;
 
             return { session, user };
         },

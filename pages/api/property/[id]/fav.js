@@ -20,7 +20,7 @@ export default async function handle(req, res) {
         const agg = [
             {
                 $match: {
-                    _id: new ObjectId(session.user.sub),
+                    email: session.user.email,
                 },
             },
             {
