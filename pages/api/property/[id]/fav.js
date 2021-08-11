@@ -44,7 +44,7 @@ export default async function handle(req, res) {
             const updatedUser = await db
                 .collection('users')
                 .findOneAndUpdate(
-                    { _id: ObjectId(session.user.sub) },
+                    { email: session.user.email },
                     { $pull: { favouriteProperties: id } },
                     { returnOriginal: false }
                 );
@@ -54,7 +54,7 @@ export default async function handle(req, res) {
             const updatedUser = await db
                 .collection('users')
                 .findOneAndUpdate(
-                    { _id: ObjectId(session.user.sub) },
+                    { email: session.user.email },
                     { $addToSet: { favouriteProperties: id } },
                     { returnOriginal: false }
                 );
