@@ -81,7 +81,7 @@ export default memo(function Card({
                     console.log('res Card: ', res);
                     console.log(
                         'Card env: ',
-                        process.env.process.env.NEXT_PUBLIC_NEXTAUTH_URL
+                        process.env.NEXT_PUBLIC_NEXTAUTH_URL
                     );
 
                     dispatch({
