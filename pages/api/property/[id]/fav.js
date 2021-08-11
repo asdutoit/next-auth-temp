@@ -3,9 +3,7 @@ import { getSession } from 'next-auth/client';
 const { ObjectId } = require('mongodb');
 
 export default async function handle(req, res) {
-    console.log('fav api reached 1');
     const session = await getSession({ req });
-    console.log('fav api reached 2');
 
     if (req.method !== 'POST') {
         res.status(400).send({ message: 'Only post requests allowed' });
@@ -14,8 +12,6 @@ export default async function handle(req, res) {
         const { id } = req.query;
         const { client } = await connectToDatabase();
         const db = await client.db(process.env.USERS_DB);
-
-        console.log('fav user', session);
 
         const agg = [
             {
@@ -33,7 +29,6 @@ export default async function handle(req, res) {
         let favExist = false;
 
         const favs = await db.collection('users').aggregate(agg).toArray();
-        console.log('in api/property/[id]/fav: ', favs);
         if (favs.length > 0) {
             if (favs[0].favouriteProperties?.length > 0) {
                 favExist = favs[0].favouriteProperties.includes(id);
@@ -61,9 +56,6 @@ export default async function handle(req, res) {
 
             res.status(200).send(updatedUser.value);
         }
-
-        // res.status(200).send({ Property: property });
-        // console.log('Session', JSON.stringify(session.user.sub, null, 2));
     } else {
         res.status(401).send({
             message: 'You are not authorised to access this resource',

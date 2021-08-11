@@ -64,7 +64,6 @@ export default function buy() {
     useEffect(() => {
         function updateFavs() {
             if (session) {
-                console.log(session);
                 try {
                     dispatch({
                         type: 'FAV_UPDATE',
