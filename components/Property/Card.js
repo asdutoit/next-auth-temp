@@ -79,6 +79,10 @@ export default memo(function Card({
 
                 if (res.status === 200) {
                     console.log('res Card: ', res);
+                    console.log(
+                        'Card env: ',
+                        process.env.process.env.NEXT_PUBLIC_NEXTAUTH_URL
+                    );
 
                     dispatch({
                         type: 'FAV_UPDATE',

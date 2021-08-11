@@ -26,7 +26,7 @@ export default async function handle(req, res) {
             },
         ];
 
-        let favExist;
+        let favExist = false;
 
         const favs = await db.collection('users').aggregate(agg).toArray();
         console.log('in api/property/[id]/fav: ', favs);
