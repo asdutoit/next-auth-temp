@@ -85,7 +85,7 @@ export default memo(function Card({
                     console.log('res Card: ', res);
                     console.log(
                         'Card env: ',
-                        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/property/${propertyId}/fav`
+                        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/property/${property._id}/fav`
                     );
 
                     dispatch({

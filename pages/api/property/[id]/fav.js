@@ -13,6 +13,8 @@ export default async function handle(req, res) {
         const { client } = await connectToDatabase();
         const db = await client.db(process.env.USERS_DB);
 
+        console.log('fav user', session.user);
+
         const agg = [
             {
                 $match: {
