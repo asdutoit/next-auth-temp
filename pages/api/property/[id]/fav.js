@@ -3,8 +3,9 @@ import { getSession } from 'next-auth/client';
 const { ObjectId } = require('mongodb');
 
 export default async function handle(req, res) {
+    console.log('fav api reached 1');
     const session = await getSession({ req });
-    console.log('fav api reached');
+    console.log('fav api reached 2');
 
     if (req.method !== 'POST') {
         res.status(400).send({ message: 'Only post requests allowed' });
@@ -14,7 +15,7 @@ export default async function handle(req, res) {
         const { client } = await connectToDatabase();
         const db = await client.db(process.env.USERS_DB);
 
-        console.log('fav user', session.user);
+        console.log('fav user', session);
 
         const agg = [
             {
