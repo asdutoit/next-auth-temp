@@ -40,8 +40,6 @@ export default function buy() {
         // staleTime: 5000,
     });
 
-    const { properties } = data;
-
     useEffect(() => {
         const coords = JSON.parse(localStorage.getItem('coords'));
         if (!coords) {
@@ -76,6 +74,7 @@ export default function buy() {
     }, [loading]);
 
     if (isLoading) return 'Loading...';
+    const { properties } = data;
 
     return (
         <div className="flex flex-col h-full mdxl:flex-row buy-rent ">
