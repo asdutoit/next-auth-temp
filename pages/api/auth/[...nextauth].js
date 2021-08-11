@@ -172,15 +172,6 @@ export default NextAuth({
                 .collection('users')
                 .find({ email: user.email })
                 .toArray();
-            console.log(
-                'next auth session - env - users_db: ',
-                process.env.USERS_DB
-            );
-            console.log(
-                'next auth session - env - DB URL: ',
-                process.env.DATABASE_URL
-            );
-            console.log('next auth session - user1: ', user1);
 
             session.user.favouriteProperties = user1[0]?.favouriteProperties;
 

@@ -4,6 +4,7 @@ const { ObjectId } = require('mongodb');
 
 export default async function handle(req, res) {
     const session = await getSession({ req });
+    console.log('fav api reached');
 
     if (req.method !== 'POST') {
         res.status(400).send({ message: 'Only post requests allowed' });
