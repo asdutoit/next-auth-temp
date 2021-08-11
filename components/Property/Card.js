@@ -76,6 +76,8 @@ export default memo(function Card({
                 const res = await updater(property._id);
 
                 if (res.status === 200) {
+                    console.log('res Card: ', res);
+
                     dispatch({
                         type: 'FAV_UPDATE',
                         payload: res.data.favouriteProperties,
