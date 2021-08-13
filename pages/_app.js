@@ -1,5 +1,5 @@
 import React, { useContext, useReducer } from 'react';
-import { Provider } from 'next-auth/client';
+import { Provider as AuthProvider } from 'next-auth/client';
 import Layout from '../components/Layout/Layout';
 import '../styles/globals.css';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -21,13 +21,13 @@ function MyApp({ Component, pageProps }) {
     return (
         <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
-                <Provider session={pageProps.session}>
+                <AuthProvider session={pageProps.session}>
                     <UserContext.Provider value={{ state, dispatch }}>
                         <Layout>
                             <Component {...pageProps} />
                         </Layout>
                     </UserContext.Provider>
-                </Provider>
+                </AuthProvider>
             </Hydrate>
             <ReactQueryDevtools />
         </QueryClientProvider>

@@ -8,6 +8,7 @@ import { getsession, useSession } from 'next-auth/client';
 import { QueryClient, useQuery } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
 import { UserContext } from '../context/Context';
+import { getProperties } from '../utils/queries';
 
 const defaultProperty = {
     property_id: '',
@@ -15,18 +16,6 @@ const defaultProperty = {
     lat: '',
     price: '',
 };
-
-const getProperties = () => {
-    return fetch(
-        `${
-            process.env.NEXTAUTH_URL ? process.env.NEXTAUTH_URL : ''
-        }/api/properties`
-    ).then((res) => res.json());
-};
-
-// getUserFavourites = () => {
-//     return axios.get();
-// };
 
 export default function buy() {
     const [session, loading] = useSession();

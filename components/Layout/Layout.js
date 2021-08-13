@@ -2,8 +2,11 @@
 import Head from 'next/head';
 import Navbar from '../Navbar';
 import styles from './Layout.module.css';
+import { useSession } from 'next-auth/client';
 
 export default function Layout({ children }) {
+    const [session, loading] = useSession();
+
     return (
         <>
             <Head>

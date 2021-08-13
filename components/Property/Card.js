@@ -33,6 +33,7 @@ export default memo(function Card({
     const [shareHover, setShareHover] = useState(false);
     const router = useRouter();
     const [session, loading] = useSession();
+    const [saving, setSaving] = useState(false);
 
     // ============== HANDLE TOGGLE PROPERTY TO FAVOURITE OR NOT ==================
     //
@@ -48,6 +49,7 @@ export default memo(function Card({
                         session.user?.favouriteProperties?.includes(tempFav);
                     // 3.  If there are, do nothing.   If not, add to profile.
                     if (!valid) {
+                        setSaving(true);
                         const res = await updater(tempFav);
                         if (res.status === 200) {
                             dispatch({
@@ -55,6 +57,7 @@ export default memo(function Card({
                                 payload: res.data.favouriteProperties,
                             });
                             localStorage.removeItem('tempFav');
+                            setSaving(false);
                         } else {
                             console.log('Favourite Update failed');
                             //TODO:  Add a user notification, toaster, to notify of an error
@@ -71,6 +74,7 @@ export default memo(function Card({
             // 1.   Check if user is logged in.  If not, redirect to signin page
             if (session) {
                 // 2.   Toggle the property as favourite or un-favourite - DONE ON BACKEND
+                setSaving(true);
                 const res = await updater(property._id);
 
                 if (res.status === 200) {
@@ -78,6 +82,7 @@ export default memo(function Card({
                         type: 'FAV_UPDATE',
                         payload: res.data.favouriteProperties,
                     });
+                    setSaving(false);
                 }
             } else {
                 // Set the favourite item in localstorage temporarily until user logged in.  See /buy page
@@ -198,7 +203,10 @@ export default memo(function Card({
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="rounded-full h-8 w-8  m-1 p-1 "
+                        className={classNames(
+                            saving ? 'animate-pulse' : '',
+                            'rounded-full h-8 w-8  m-1 p-1'
+                        )}
                         fill={
                             favHover || state.favs.includes(property._id)
                                 ? 'red'

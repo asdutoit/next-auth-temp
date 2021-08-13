@@ -2,22 +2,14 @@ import React, { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import { useSession, signOut, getSession } from 'next-auth/client';
 import { classNames } from '../utils/general';
-
-const navigation = [
-    { name: 'Buy', href: '/buy', current: false },
-    { name: 'Sell', href: '/sell', current: false },
-    { name: 'Rent', href: '/rent', current: false },
-];
+import { navigationLeft } from '../navigation/index';
 
 export default function Navbar() {
     const router = useRouter();
     const [session, loading] = useSession();
-    const handleClick = (link) => {
-        console.log(router);
-    };
 
     return (
         <Disclosure
@@ -77,12 +69,9 @@ export default function Navbar() {
                                 </div>
 
                                 <div className="hidden md:flex items-center space-x-1">
-                                    {navigation.map((link) => (
+                                    {navigationLeft.map((link) => (
                                         <Link key={link.name} href={link.href}>
                                             <a
-                                                onClick={() =>
-                                                    handleClick(link)
-                                                }
                                                 className={classNames(
                                                     router.pathname ===
                                                         link.href
@@ -183,7 +172,13 @@ export default function Navbar() {
                                                         </Menu.Item>
                                                         <Menu.Item>
                                                             {({ active }) => (
-                                                                <a
+                                                                <button
+                                                                    className={classNames(
+                                                                        active
+                                                                            ? 'bg-gray-100'
+                                                                            : '',
+                                                                        'block px-4 py-2 text-sm text-gray-700 text-left w-full'
+                                                                    )}
                                                                     onClick={() =>
                                                                         signOut(
                                                                             {
@@ -192,15 +187,9 @@ export default function Navbar() {
                                                                             }
                                                                         )
                                                                     }
-                                                                    className={classNames(
-                                                                        active
-                                                                            ? 'bg-gray-100'
-                                                                            : '',
-                                                                        'block px-4 py-2 text-sm text-gray-700'
-                                                                    )}
                                                                 >
                                                                     Sign out
-                                                                </a>
+                                                                </button>
                                                             )}
                                                         </Menu.Item>
                                                     </Menu.Items>
@@ -218,13 +207,6 @@ export default function Navbar() {
                                             </a>
                                         </Link>
                                     </div>
-                                    {/* <div className="hidden md:block">
-                    <Link href="/auth/signup">
-                      <a className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-                        Sign up
-                      </a>
-                    </Link>
-                  </div> */}
                                 </div>
                             )}
                         </div>
@@ -233,7 +215,7 @@ export default function Navbar() {
                     {/* <!-- mobile menu --> */}
                     <Disclosure.Panel className="md:hidden">
                         <div className="px-2 pt-2 pb-3 space-y-1">
-                            {navigation.map((item) => (
+                            {navigationLeft.map((item) => (
                                 <a
                                     key={item.name}
                                     href={item.href}

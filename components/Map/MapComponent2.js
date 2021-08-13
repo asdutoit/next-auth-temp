@@ -101,6 +101,8 @@ export default function MapComponent2({
                 mapRef={mapRef}
                 polygonRef={polygonRef}
                 setMarkers={setMarkers}
+                type="rent" // rent or buy
+                // pass property fetcher here
             />
             <GoogleMapReact
                 bootstrapURLKeys={{
