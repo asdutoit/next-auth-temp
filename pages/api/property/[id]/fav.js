@@ -12,7 +12,6 @@ export default async function handle(req, res) {
         const { id } = req.query;
         const { client } = await connectToDatabase();
         const db = await client.db(process.env.USERS_DB);
-
         const agg = [
             {
                 $match: {

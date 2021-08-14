@@ -9,4 +9,13 @@ const getProperties = async () => {
     return data;
 };
 
-export { getProperties };
+const getFavourites = async () => {
+    const { data } = await axios.get(
+        `${
+            process.env.NEXTAUTH_URL ? process.env.NEXTAUTH_URL : ''
+        }/api/user/favs`
+    );
+    return data;
+};
+
+export { getProperties, getFavourites };

@@ -4,7 +4,7 @@ import { numFormatter } from '../../utils/numFormatter';
 import axios from 'axios';
 import { signIn, useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import { useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { classNames } from '../../utils/general';
 import { UserContext } from '../../context/Context';
 

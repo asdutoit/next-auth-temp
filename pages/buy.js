@@ -8,7 +8,7 @@ import { getsession, useSession } from 'next-auth/client';
 import { QueryClient, useQuery } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
 import { UserContext } from '../context/Context';
-import { getProperties } from '../utils/queries';
+import { getProperties, getFavourites } from '../utils/queries';
 
 const defaultProperty = {
     property_id: '',
@@ -27,6 +27,13 @@ export default function buy() {
     const [isHighlighted, setIsHighlighted] = useState(defaultProperty);
     const { isLoading, error, data } = useQuery('properties', getProperties, {
         // staleTime: 5000,
+    });
+    const {
+        isLoading: favsLoading,
+        data: favsData,
+        isFetching,
+    } = useQuery('favourites', getFavourites, {
+        refetchInterval: 2000,
     });
 
     useEffect(() => {
@@ -52,11 +59,12 @@ export default function buy() {
 
     useEffect(() => {
         function updateFavs() {
-            if (session) {
+            console.log('favsdata', favsData);
+            if (session && favsData) {
                 try {
                     dispatch({
                         type: 'FAV_UPDATE',
-                        payload: session.user.favouriteProperties,
+                        payload: favsData.favourites,
                     });
                 } catch (error) {
                     console.log('an error occured in the /buy page');
@@ -64,7 +72,7 @@ export default function buy() {
             }
         }
         updateFavs();
-    }, [loading]);
+    }, [loading, isFetching]);
 
     if (isLoading) return 'Loading...';
     const { properties } = data;
@@ -144,6 +152,7 @@ export default function buy() {
 export async function getStaticProps() {
     const queryClient = new QueryClient();
     await queryClient.prefetchQuery('properties', getProperties);
+    await queryClient.prefetchQuery('favourites', getFavourites);
 
     return {
         props: {
