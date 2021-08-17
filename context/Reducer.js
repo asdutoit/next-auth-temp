@@ -3,10 +3,15 @@ const userReducer = (state, { type, payload }) => {
         case 'LOGIN':
             console.log('LOGIN CONTEXT CASE');
         case 'FAV_UPDATE':
-            return {
-                ...state,
-                favs: [...payload],
-            };
+            console.log('payload', payload);
+            if (payload === undefined) {
+                return { ...state, favs: [] };
+            } else {
+                return {
+                    ...state,
+                    favs: [...payload],
+                };
+            }
         default:
             return state;
     }

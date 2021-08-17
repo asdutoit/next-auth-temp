@@ -74,6 +74,7 @@ function PhotoSlider({ photos, rounded = false }) {
                         layout="responsive"
                         width="512"
                         height="465"
+                        quality={25}
                         key={i}
                         loading="eager"
                         // priority="true"

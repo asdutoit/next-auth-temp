@@ -25,15 +25,14 @@ export default function buy() {
     const polygonRef = useRef();
     const [currentLocation, setCurrentLocation] = useState(null);
     const [isHighlighted, setIsHighlighted] = useState(defaultProperty);
-    const { isLoading, error, data } = useQuery('properties', getProperties, {
-        // staleTime: 5000,
-    });
-    const {
-        isLoading: favsLoading,
-        data: favsData,
-        isFetching,
-    } = useQuery('favourites', getFavourites, {
-        refetchInterval: 2000,
+    const { isLoading, error, data } = useQuery('properties', getProperties);
+    useQuery('favourites', getFavourites, {
+        onSuccess: (o) => {
+            dispatch({
+                type: 'FAV_UPDATE',
+                payload: o.favourites,
+            });
+        },
     });
 
     useEffect(() => {
@@ -56,23 +55,6 @@ export default function buy() {
             // mapRef.current = map;
         }
     }, []);
-
-    useEffect(() => {
-        function updateFavs() {
-            console.log('favsdata', favsData);
-            if (session && favsData) {
-                try {
-                    dispatch({
-                        type: 'FAV_UPDATE',
-                        payload: favsData.favourites,
-                    });
-                } catch (error) {
-                    console.log('an error occured in the /buy page');
-                }
-            }
-        }
-        updateFavs();
-    }, [loading, isFetching]);
 
     if (isLoading) return 'Loading...';
     const { properties } = data;

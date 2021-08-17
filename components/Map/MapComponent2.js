@@ -5,6 +5,8 @@ import { Drawing } from '../../components/maputils/Drawing';
 import useSupercluster from 'use-supercluster';
 import MarkerComponent from '../Markers/MarkerComponent';
 import MapMarker from '../Markers/MapMarker';
+import { classNames } from '../../utils/general';
+import MarkerListComponent from '../Markers/MarkerListComponent';
 
 function createMapOptions(maps) {
     return {
@@ -20,6 +22,19 @@ const default_center = { lat: 24.701627, lng: -79.026432 };
 const libraries = ['places', 'geometry', 'drawing', 'visualization'];
 
 const MarkerCluster = ({ children }) => children;
+
+const renderMultiListingComponent = (points, isdragging) => {
+    return (
+        <MarkerListComponent
+            className="overflow-visible"
+            data={points}
+            isdragging={isdragging}
+        >
+            {/* MARKER */}
+            <MapMarker text={`${points.length} Listings`} />
+        </MarkerListComponent>
+    );
+};
 
 export default function MapComponent2({
     mapRef,
@@ -126,7 +141,6 @@ export default function MapComponent2({
                     const [longitude, latitude] = cluster.geometry.coordinates;
                     const { cluster: isCluster, point_count: pointCount } =
                         cluster.properties;
-
                     if (isCluster) {
                         return (
                             <MarkerCluster
@@ -135,13 +149,21 @@ export default function MapComponent2({
                                 lng={longitude}
                             >
                                 <div
-                                    className={`rounded-full h-6 w-6 flex items-center justify-center bg-indigo-400 z-10 cursor-pointer transition duration-100 ease-in-out transform hover:-translate-y-1 hover:scale-110 `}
+                                    className={classNames(
+                                        zoom > 19
+                                            ? ''
+                                            : 'rounded-full h-6 w-6 flex items-center justify-center bg-indigo-400 z-10 cursor-pointer transition duration-100 ease-in-out transform hover:-translate-y-1 hover:scale-110 '
+                                    )}
                                     onClick={() => {
                                         const expansionZoom = Math.min(
                                             supercluster.getClusterExpansionZoom(
                                                 cluster.id
                                             ),
                                             20
+                                        );
+                                        console.log(
+                                            'cluster properties',
+                                            cluster
                                         );
                                         mapRef.current.setZoom(expansionZoom);
                                         mapRef.current.panTo({
@@ -150,9 +172,16 @@ export default function MapComponent2({
                                         });
                                     }}
                                 >
-                                    <span className="font-bold">
-                                        {pointCount}
-                                    </span>
+                                    {zoom > 19 ? (
+                                        renderMultiListingComponent(
+                                            supercluster.getLeaves(cluster.id),
+                                            isdragging
+                                        )
+                                    ) : (
+                                        <span className="font-bold">
+                                            {pointCount}
+                                        </span>
+                                    )}
                                 </div>
                             </MarkerCluster>
                         );
@@ -178,6 +207,7 @@ export default function MapComponent2({
                                     text={cluster.properties.propertyPrice}
                                     conditionalClass={isHighlighted.property_id}
                                     clusterId={cluster.properties.propertyId}
+                                    currency={'R'}
                                 />
                             </MarkerComponent>
                         );
@@ -189,6 +219,7 @@ export default function MapComponent2({
                         lat={isHighlighted.lat}
                         lng={isHighlighted.lon}
                         text={isHighlighted.price}
+                        currency={'R'}
                     />
                 ) : null}
                 {/* ============= END MARKERS ================ */}

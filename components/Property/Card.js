@@ -4,7 +4,7 @@ import { numFormatter } from '../../utils/numFormatter';
 import axios from 'axios';
 import { signIn, useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
+import { useQueryClient, useMutation } from 'react-query';
 import { classNames } from '../../utils/general';
 import { UserContext } from '../../context/Context';
 
@@ -34,6 +34,62 @@ export default memo(function Card({
     const router = useRouter();
     const [session, loading] = useSession();
     const [saving, setSaving] = useState(false);
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation(
+        (propertyId) => axios.post(`/api/property/${propertyId}/fav`),
+        {
+            onMutate: async (propertyId) => {
+                setSaving(true);
+                await queryClient.cancelQueries('favourites');
+
+                const previousFavourites =
+                    queryClient.getQueryData('favourites');
+
+                const newval = previousFavourites.favourites.filter(
+                    (value) => value !== propertyId.toString()
+                );
+
+                if (
+                    JSON.stringify(previousFavourites.favourites) !==
+                    JSON.stringify(newval)
+                ) {
+                    // Remove from the favourites array
+                    queryClient.setQueryData('favourites', (old) => ({
+                        ...old,
+                        favourites: [...newval],
+                    }));
+                } else {
+                    // Add to the favourites array
+                    queryClient.setQueryData('favourites', (old) => ({
+                        ...old,
+                        favourites: [...old.favourites, propertyId],
+                    }));
+                }
+
+                return { previousFavourites };
+            },
+
+            onError: (err, variables, context) => {
+                queryClient.setQueryData(
+                    'favourites',
+                    context.previousFavourites
+                );
+            },
+
+            onSettled: (o) => {
+                queryClient.invalidateQueries('favourites');
+                localStorage.removeItem('tempFav');
+                setSaving(false);
+                // Below function is not necessarily needed, as the query update from /buy buy automatically fire and update context
+                // console.log('o', o.data.favouriteProperties);
+                // dispatch({
+                //     type: 'FAV_UPDATE',
+                //     payload: o.data.favouriteProperties,
+                // });
+            },
+        }
+    );
 
     // ============== HANDLE TOGGLE PROPERTY TO FAVOURITE OR NOT ==================
     //
@@ -49,19 +105,7 @@ export default memo(function Card({
                         session.user?.favouriteProperties?.includes(tempFav);
                     // 3.  If there are, do nothing.   If not, add to profile.
                     if (!valid) {
-                        setSaving(true);
-                        const res = await updater(tempFav);
-                        if (res.status === 200) {
-                            dispatch({
-                                type: 'FAV_UPDATE',
-                                payload: res.data.favouriteProperties,
-                            });
-                            localStorage.removeItem('tempFav');
-                            setSaving(false);
-                        } else {
-                            console.log('Favourite Update failed');
-                            //TODO:  Add a user notification, toaster, to notify of an error
-                        }
+                        mutation.mutate(tempFav);
                     }
                 }
             }
@@ -75,15 +119,7 @@ export default memo(function Card({
             if (session) {
                 // 2.   Toggle the property as favourite or un-favourite - DONE ON BACKEND
                 setSaving(true);
-                const res = await updater(property._id);
-
-                if (res.status === 200) {
-                    dispatch({
-                        type: 'FAV_UPDATE',
-                        payload: res.data.favouriteProperties,
-                    });
-                    setSaving(false);
-                }
+                mutation.mutate(property._id);
             } else {
                 // Set the favourite item in localstorage temporarily until user logged in.  See /buy page
                 localStorage.setItem('tempFav', property._id);

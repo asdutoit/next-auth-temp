@@ -12,7 +12,7 @@ export default async function handle(req, res) {
             session === undefined ||
             session === null
         ) {
-            res.status(401).send({ message: 'Unauthorized.  Please log in' });
+            res.send({ message: 'Unauthorized.  Please log in' });
             return;
         } else {
             const { client } = await connectToDatabase();
@@ -33,12 +33,10 @@ export default async function handle(req, res) {
 
             const favs = await db.collection('users').aggregate(agg).toArray();
             if (favs.length > 0) {
-                if (favs[0].favouriteProperties?.length > 0) {
+                if (favs[0].favouriteProperties) {
                     res.status(200).send({
                         favourites: favs[0].favouriteProperties,
                     });
-                } else {
-                    res.status(204).send({ favourites: [] });
                 }
             } else {
                 res.status(404).send({ message: 'Not Found' });
