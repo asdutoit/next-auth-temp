@@ -101,7 +101,19 @@ export default NextAuth({
                 .find({ email: user.email })
                 .toArray();
 
-            user.favouriteProperties = user1[0]?.favouriteProperties;
+            if (!user1[0]?.favouriteProperties) {
+                const user_preupdate = await db
+                    .collection('users')
+                    .findOneAndUpdate(
+                        { email: user.email },
+                        { $set: { favouriteProperties: [] } },
+                        { returnOriginal: false }
+                    );
+                user.favouriteProperties =
+                    user_preupdate.value.favouriteProperties;
+            } else {
+                user.favouriteProperties = user1[0]?.favouriteProperties;
+            }
 
             return { session, user };
         },

@@ -28,33 +28,44 @@ export default async function handle(req, res) {
         let favExist = false;
 
         const favs = await db.collection('users').aggregate(agg).toArray();
-        if (favs.length > 0) {
-            if (favs[0].favouriteProperties?.length > 0) {
-                favExist = favs[0].favouriteProperties.includes(id);
-            }
-        }
-        if (favExist) {
-            // remove from DB
-            const updatedUser = await db
-                .collection('users')
-                .findOneAndUpdate(
-                    { email: session.user.email },
-                    { $pull: { favouriteProperties: id } },
-                    { returnOriginal: false }
-                );
-            res.status(200).send(updatedUser.value);
-        } else {
-            // add to db
-            const updatedUser = await db
-                .collection('users')
-                .findOneAndUpdate(
-                    { email: session.user.email },
-                    { $addToSet: { favouriteProperties: id } },
-                    { returnOriginal: false }
-                );
+        // if (favs[0].favouriteProperties?.length > 0) {
+        //     favExist = favs[0].favouriteProperties.includes(id);
+        // }
+        const operator = favs[0].favouriteProperties?.includes(id)
+            ? '$pull'
+            : '$addToSet';
 
-            res.status(200).send(updatedUser.value);
-        }
+        const updatedUser = await db
+            .collection('users')
+            .findOneAndUpdate(
+                { email: session.user.email },
+                { [operator]: { favouriteProperties: id } },
+                { returnOriginal: false }
+            );
+        res.status(200).send(updatedUser.value);
+
+        // if (favs[0].favouriteProperties?.includes(id)) {
+        //     // remove from DB
+        //     const updatedUser = await db
+        //         .collection('users')
+        //         .findOneAndUpdate(
+        //             { email: session.user.email },
+        //             { $pull: { favouriteProperties: id } },
+        //             { returnOriginal: false }
+        //         );
+        //     res.status(200).send(updatedUser.value);
+        // } else {
+        //     // add to db
+        //     const updatedUser = await db
+        //         .collection('users')
+        //         .findOneAndUpdate(
+        //             { email: session.user.email },
+        //             { $addToSet: { favouriteProperties: id } },
+        //             { returnOriginal: false }
+        //         );
+
+        //     res.status(200).send(updatedUser.value);
+        // }
     } else {
         res.status(401).send({
             message: 'You are not authorised to access this resource',

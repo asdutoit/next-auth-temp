@@ -45,7 +45,6 @@ export default memo(function Card({
 
                 const previousFavourites =
                     queryClient.getQueryData('favourites');
-
                 const newval = previousFavourites.favourites.filter(
                     (value) => value !== propertyId.toString()
                 );
