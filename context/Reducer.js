@@ -3,7 +3,6 @@ const userReducer = (state, { type, payload }) => {
         case 'LOGIN':
             console.log('LOGIN CONTEXT CASE');
         case 'FAV_UPDATE':
-            console.log('payload', payload);
             if (payload === undefined) {
                 return { ...state, favs: [] };
             } else {

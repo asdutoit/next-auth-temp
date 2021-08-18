@@ -119,6 +119,7 @@ export default memo(function Card({
             if (session) {
                 // 2.   Toggle the property as favourite or un-favourite - DONE ON BACKEND
                 setSaving(true);
+                console.log(session);
                 mutation.mutate(property._id);
             } else {
                 // Set the favourite item in localstorage temporarily until user logged in.  See /buy page

@@ -32,14 +32,19 @@ export default async function handle(req, res) {
             ];
 
             const favs = await db.collection('users').aggregate(agg).toArray();
-            if (favs.length > 0) {
-                if (favs[0].favouriteProperties) {
-                    res.status(200).send({
-                        favourites: favs[0].favouriteProperties,
-                    });
-                }
+            if (favs[0].favouriteProperties) {
+                res.status(200).send({
+                    favourites: favs[0].favouriteProperties,
+                });
             } else {
-                res.status(404).send({ message: 'Not Found' });
+                const user = await db
+                    .collection('users')
+                    .findOneAndUpdate(
+                        { email: session.user.email },
+                        { $set: { favouriteProperties: [] } },
+                        { returnOriginal: false }
+                    );
+                res.status(200).send(user.value);
             }
         }
     } catch (error) {

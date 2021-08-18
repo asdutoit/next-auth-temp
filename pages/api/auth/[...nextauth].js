@@ -23,73 +23,6 @@ export default NextAuth({
             },
             from: process.env.EMAIL_FROM,
         }),
-        // Providers.Credentials({
-        //   name: "Credentials",
-        //   // ======== DETAILS FOR THE DEFAULT API FORM ========
-        //   credentials: {
-        //     username: {
-        //       label: "Email",
-        //       type: "text",
-        //       placeholder: "john.doe@testmail .com",
-        //     },
-        //     password: {
-        //       label: "Password",
-        //       type: "password",
-        //     },
-        //   },
-        //   async authorize(credentials, req) {
-        //     // Add logic here to look up the user from the credentials supplied
-        //     const { username, password } = credentials;
-        //     const { client } = await connectToDatabase();
-        //     const db = client.db(process.env.MONGODB_DB);
-        //     // ---- 1.  Check if user exists -----
-        //     let user = await db.collection("users").findOne({ email: username });
-
-        //     if (user && user.password) {
-        //       const match = await bcrypt.compare(password, user.password);
-        //       console.log("USER", user);
-        //       console.log("Match", match);
-        //       return user;
-        //     } else if (user) {
-        //       console.log("test");
-        //       let oauthuser = await db
-        //         .collection("accounts")
-        //         .findOne({ userId: ObjectId(user._id) });
-
-        //       if (oauthuser) {
-        //         console.log(oauthuser);
-        //         throw new Error(`${oauthuser.providerId}`);
-        //       }
-        //     } else {
-        //       return null;
-        //     }
-
-        //     // throw new Error("Password is incorrect");
-
-        //     // if (user) {
-        //     //   // Any object returned will be saved in `user` property of the JWT
-        //     // } else {
-        //     //   // If you return null or false then the credentials will be rejected
-        //     //   return null;
-        //     //   // You can also Reject this callback with an Error or with a URL:
-        //     //   // throw new Error('error message') // Redirect to error page
-        //     //   // throw '/path/to/redirect'        // Redirect to a URL
-        //     // }
-        //   },
-        // }),
-        // Temporarily removing the Apple provider from the demo site as the
-        // callback URL for it needs updating due to Vercel changing domains
-        /*
-    Providers.Apple({
-      clientId: process.env.APPLE_ID,
-      clientSecret: {
-        appleId: process.env.APPLE_ID,
-        teamId: process.env.APPLE_TEAM_ID,
-        privateKey: process.env.APPLE_PRIVATE_KEY,
-        keyId: process.env.APPLE_KEY_ID,
-      },
-    }),
-    */
         Providers.Facebook({
             clientId: process.env.FACEBOOK_ID,
             clientSecret: process.env.FACEBOOK_SECRET,
@@ -99,12 +32,7 @@ export default NextAuth({
             clientSecret: process.env.GOOGLE_SECRET,
         }),
     ],
-    // Database optional. MySQL, Maria DB, Postgres and MongoDB are supported.
-    // https://next-auth.js.org/configuration/databases
-    //
-    // Notes:
-    // * You must install an appropriate node_module for your database
-    // * The Email provider requires a database (OAuth providers do not)
+
     // database: 'mongodb://localhost:27017/testdb',
     database: process.env.DATABASE_URL,
 
