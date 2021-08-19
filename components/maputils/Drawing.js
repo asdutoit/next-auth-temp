@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { faWindows } from '@fortawesome/free-brands-svg-icons';
 
 function Drawing({ mapRef, polygonRef, setMarkers }) {
     const [draw, setDraw] = useState(false);
@@ -22,6 +23,14 @@ function Drawing({ mapRef, polygonRef, setMarkers }) {
             'mousedown',
             function (e) {
                 drawFreeHandMouse(map, polygonRef);
+            }
+        );
+
+        window.google.maps.event.addDomListener(
+            map.getDiv(),
+            'touchstart',
+            function (e) {
+                drawFreeHandHand(map, polygonRef);
             }
         );
     };
@@ -48,6 +57,71 @@ function Drawing({ mapRef, polygonRef, setMarkers }) {
             console.log('error', error);
         }
     };
+
+    function drawFreeHandHand(map, polygonRef) {
+        const queryPolygon = [];
+        //the function starts by creating a polyline.
+        //the polyline
+        let poly = new window.google.maps.Polyline({
+            map: map,
+            clickable: false,
+        });
+        console.log('map', map);
+        let move = window.google.maps.event.addDomListener(
+            map,
+            'touchmove',
+            function (e) {
+                console.log('start');
+                console.log(e);
+                // poly.getPath().push(e.latLng);
+                // console.log('end', e.latLng);
+            }
+        );
+
+        // window.google.maps.event.addListener(
+        //     map,
+        //     'touchend',
+        //     async function (e) {
+        //         window.google.maps.event.removeListener(move);
+        //         var path = poly.getPath();
+        //         poly.setMap(null);
+        //         poly = new window.google.maps.Polygon({ map: map, path: path });
+        //         // or clearInstanceListeners()
+        //         window.google.maps.event.clearListeners(
+        //             map.getDiv(),
+        //             'touchstart'
+        //         );
+
+        //         // OPTION 2 - REMOVE BOUNDRY / POLYGON
+        //         // Save polygon to the polygonRef
+        //         polygonRef.current = poly;
+        //         const vertices = poly.getPath();
+        //         for (let i = 0; i <= vertices.getLength(); i++) {
+        //             if (i === vertices.getLength()) {
+        //                 const xy = vertices.getAt(0);
+        //                 queryPolygon.push([xy.lng(), xy.lat()]);
+        //                 break;
+        //             }
+        //             const xy = vertices.getAt(i);
+        //             queryPolygon.push([xy.lng(), xy.lat()]);
+        //         }
+        //         try {
+        //             const response = await axios({
+        //                 url: '/api/shipwrecks',
+        //                 method: 'post',
+        //                 data: {
+        //                     queryPolygon,
+        //                 },
+        //             });
+        //             console.log('RESPONSE', response);
+        //             setMarkers(response.data);
+        //         } catch (error) {
+        //             console.log(error);
+        //         }
+        //         enable(map);
+        //     }
+        // );
+    }
 
     function drawFreeHandMouse(map, polygonRef) {
         const queryPolygon = [];
