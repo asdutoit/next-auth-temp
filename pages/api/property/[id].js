@@ -6,8 +6,6 @@ export default async function handle(req, res) {
     const { client } = await connectToDatabase();
     const db = await client.db(process.env.PROPERTY_DB);
 
-    console.log('ID:', req.query.id);
-
     const filter = {
         _id: req.query.id,
     };

@@ -18,7 +18,7 @@ const MapMarker = ({
                     : 'z-0'
             } ${isOpen ? '-translate-y-1 scale-110 bg-purple-400' : ''}`}
         >
-            <span className="font-bold text-black text-xs">{`${
+            <span className="font-bold text-black text-tiny">{`${
                 currency ? currency : ''
             } ${price}`}</span>
         </div>

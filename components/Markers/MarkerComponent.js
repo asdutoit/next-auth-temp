@@ -7,12 +7,15 @@ import axios from 'axios';
 export default function MarkerComponent({ propertyId, isdragging, children }) {
     const [isOpen, setOpen] = useState(false);
     const [property, setProperty] = useState(undefined);
+    const [fetchingData, setFetchingData] = useState(false);
+
     useEffect(() => {
         const fetchProperty = async (id) => {
             try {
+                setFetchingData(true);
                 const response = await axios.get(`/api/property/${id}`);
-                console.log('response', response.data.properties);
                 setProperty(response.data.properties[0]);
+                setFetchingData(false);
             } catch (error) {
                 console.log('Error in the MarkerComponent');
             }
@@ -49,7 +52,10 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
             </div>
             {isOpen &&
                 renderLayer(
-                    <MapCard layerProps={layerProps}>
+                    <MapCard
+                        layerProps={layerProps}
+                        fetchingData={fetchingData}
+                    >
                         {property && (
                             <Card
                                 property={property}

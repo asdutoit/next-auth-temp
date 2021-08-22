@@ -76,14 +76,14 @@ body {
 } */
 
 .map-price-marker {
-    left: -37px;
+    left: -24px;
     top: -25px;
     width: max-content;
     height: 20px;
     line-height: 22px;
     border: 1px solid gray;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 .map-price-marker:before,
 .map-price-marker:after {
@@ -93,14 +93,14 @@ body {
 }
 
 .map-price-marker:after {
-    left: 27px;
+    left: 17px;
     top: 18px;
     border-width: 5px;
     border-color: white transparent transparent;
 }
 
 .map-price-marker:before {
-    left: 26px;
+    left: 16px;
     top: 19px;
     border-width: 6px;
     border-color: gray transparent transparent;
