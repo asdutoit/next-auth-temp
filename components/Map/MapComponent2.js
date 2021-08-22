@@ -7,6 +7,7 @@ import MarkerComponent from '../Markers/MarkerComponent';
 import MapMarker from '../Markers/MapMarker';
 import { classNames } from '../../utils/general';
 import MarkerListComponent from '../Markers/MarkerListComponent';
+import { getViewportProperties } from '../../utils/queries';
 
 function createMapOptions(maps) {
     return {
@@ -40,70 +41,107 @@ export default function MapComponent2({
     mapRef,
     mapsRef,
     polygonRef,
-    properties,
+    setViewport,
     isHighlighted,
+    setProperties,
 }) {
-    const [center, setCenter] = useState({ lat: 24.701627, lng: -79.026432 });
     const [markers, setMarkers] = useState([]);
+    const [points, setPoints] = useState([]);
     const [bounds, setBounds] = useState(null);
-    const [zoom, setZoom] = useState(10);
+    const [zoom, setZoom] = useState(11);
+    const [busyDrawing, setBusyDrawing] = useState(false);
     const [isdragging, setIsdragging] = useState(false);
     const [value, setValue] = useLocalState('viewport', {
         lat: 24.701627,
         lng: -79.026432,
     });
-
+    const [maploaded, setMapLoaded] = useState(false);
     const unClusteredProperties = [];
 
     useEffect(() => {
-        setMarkers(properties); // Will cause 1x extra re-render
-    }, [properties]);
-
-    useEffect(() => {
-        setCenter(value);
-    }, []);
+        // Will cause 1x extra re-render
+        const points = markers.map((property) => ({
+            type: 'Feature',
+            properties: {
+                cluster: false,
+                propertyId: property._id,
+                propertyPrice: property.community.price_max,
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: [property.address.lon, property.address.lat],
+            },
+        }));
+        setPoints([...points]);
+    }, [markers]);
 
     const onBoundsChanged = async (center, zoom, bounds) => {
-        setValue({
-            lat: center.lat,
-            lng: center.lng,
-        });
-        setBounds([bounds.nw.lng, bounds.se.lat, bounds.se.lng, bounds.nw.lat]);
-        setZoom(zoom);
+        if (maploaded) {
+            setValue({
+                lat: center.lat,
+                lng: center.lng,
+            });
+            setBounds([
+                bounds.nw.lng,
+                bounds.se.lat,
+                bounds.se.lng,
+                bounds.nw.lat,
+            ]);
+
+            const mapviewport = {
+                south: bounds.se.lat,
+                west: bounds.nw.lng,
+                north: bounds.nw.lat,
+                east: bounds.se.lng,
+            };
+            setViewport(mapviewport);
+            if (!busyDrawing) {
+                try {
+                    const data = await getViewportProperties(mapviewport);
+                    setMarkers([...data.properties]);
+                } catch (error) {
+                    console.log('error', error);
+                }
+            }
+
+            setZoom(zoom);
+        }
     };
 
-    const onMapLoad = ({ map, maps }) => {
+    const onMapLoad = async ({ map, maps }) => {
         mapRef.current = map;
         mapsRef.current = maps;
+        const viewport = mapRef.current.getBounds();
+        const bounds = JSON.parse(JSON.stringify(viewport));
+        setViewport(bounds);
+        const parsedbounds = [
+            bounds.west,
+            bounds.south,
+            bounds.east,
+            bounds.north,
+        ];
+        setBounds(parsedbounds);
+        try {
+            const data = await getViewportProperties(bounds);
+            setMarkers([...data.properties]);
+        } catch (error) {
+            console.log(error);
+        }
+        setMapLoaded(true);
     };
-
-    const points = properties.map((property) => ({
-        type: 'Feature',
-        properties: {
-            cluster: false,
-            propertyId: property.property_id,
-            propertyType: property.prop_type,
-            propertyPrice: property.community.price_max,
-        },
-        data: property,
-        geometry: {
-            type: 'Point',
-            coordinates: [property.address.lon, property.address.lat],
-        },
-    }));
 
     const { clusters, supercluster } = useSupercluster({
         points,
         bounds,
         zoom,
-        options: { radius: 75, maxZoom: 20 },
+        options: { radius: 45, maxZoom: 15 },
     });
 
     // Function to check if properties are inside or outside the cluster
     const checkIfInCluster = (isHighlighted) => {
         // 1.  Check if the highlighted property is outside the cluster by comparing the unClusteredProperties with all properties
         const validationCheck = (property) =>
-            property.properties.propertyId !== isHighlighted.property_id;
+            property.properties.propertyId !== isHighlighted._id;
         const valid = unClusteredProperties.every(validationCheck);
         // 2.  Return boolean to use in conditional rendering
         return valid;
@@ -116,20 +154,21 @@ export default function MapComponent2({
                 mapRef={mapRef}
                 polygonRef={polygonRef}
                 setMarkers={setMarkers}
+                setBusyDrawing={setBusyDrawing}
+                setProperties={setProperties}
                 type="rent" // rent or buy
-                // pass property fetcher here
             />
             <GoogleMapReact
                 bootstrapURLKeys={{
                     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API,
                     libraries,
                 }}
-                defaultCenter={default_center}
+                // defaultCenter={default_center}
                 options={createMapOptions}
                 yesIWantToUseGoogleMapApiInternals
                 onGoogleApiLoaded={onMapLoad}
-                defaultZoom={8}
-                center={center}
+                defaultZoom={12}
+                center={value}
                 onChange={({ center, zoom, bounds }) =>
                     onBoundsChanged(center, zoom, bounds)
                 }
@@ -161,10 +200,6 @@ export default function MapComponent2({
                                             ),
                                             20
                                         );
-                                        console.log(
-                                            'cluster properties',
-                                            cluster
-                                        );
                                         mapRef.current.setZoom(expansionZoom);
                                         mapRef.current.panTo({
                                             lat: latitude,
@@ -193,7 +228,7 @@ export default function MapComponent2({
                                 lat={latitude}
                                 lng={longitude}
                                 className="overflow-visible"
-                                data={cluster.data}
+                                propertyId={cluster.properties.propertyId}
                                 isdragging={isdragging}
                                 // onClick={() => {
                                 //     mapRef.current.panTo({
@@ -205,7 +240,7 @@ export default function MapComponent2({
                                 {/* MARKER */}
                                 <MapMarker
                                     text={cluster.properties.propertyPrice}
-                                    conditionalClass={isHighlighted.property_id}
+                                    conditionalClass={isHighlighted._id}
                                     clusterId={cluster.properties.propertyId}
                                     currency={'R'}
                                 />
@@ -213,8 +248,7 @@ export default function MapComponent2({
                         );
                     }
                 })}
-                {isHighlighted.property_id !== '' &&
-                checkIfInCluster(isHighlighted) ? (
+                {isHighlighted._id !== '' && checkIfInCluster(isHighlighted) ? (
                     <MapMarker
                         lat={isHighlighted.lat}
                         lng={isHighlighted.lon}

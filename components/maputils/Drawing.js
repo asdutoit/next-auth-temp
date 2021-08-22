@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { faWindows } from '@fortawesome/free-brands-svg-icons';
 
-function Drawing({ mapRef, polygonRef, setMarkers }) {
+function Drawing({
+    mapRef,
+    polygonRef,
+    setMarkers,
+    setBusyDrawing,
+    setProperties,
+}) {
     const [draw, setDraw] = useState(false);
     const [drawCount, setDrawCount] = useState(0);
 
     const handleDraw = (e) => {
         e.preventDefault();
+        setBusyDrawing(true);
         const map = mapRef.current;
 
         if (draw === true) {
@@ -22,7 +29,7 @@ function Drawing({ mapRef, polygonRef, setMarkers }) {
             map.getDiv(),
             'mousedown',
             function (e) {
-                drawFreeHandMouse(map, polygonRef);
+                drawFreeHandMouse(map, polygonRef, 'mousedown');
             }
         );
 
@@ -30,7 +37,7 @@ function Drawing({ mapRef, polygonRef, setMarkers }) {
             map.getDiv(),
             'touchstart',
             function (e) {
-                drawFreeHandHand(map, polygonRef);
+                drawFreeHandMouse(map, polygonRef, 'touchstart');
             }
         );
     };
@@ -46,19 +53,29 @@ function Drawing({ mapRef, polygonRef, setMarkers }) {
         const viewport = mapRef.current.getBounds();
         try {
             const response = await axios({
-                url: '/api/shipwrecks/viewport',
+                url: '/api/properties/viewport',
                 method: 'post',
                 data: {
                     viewport,
                 },
             });
-            setMarkers(response.data);
+            const response2 = await axios({
+                url: '/api/properties/viewport',
+                method: 'post',
+                data: {
+                    viewport,
+                    list: true,
+                },
+            });
+            setMarkers(response.data.properties);
+            setProperties(response2.data.properties);
         } catch (error) {
             console.log('error', error);
         }
+        setBusyDrawing(false);
     };
 
-    function drawFreeHandHand(map, polygonRef) {
+    function drawFreeHandMouse(map, polygonRef, mousedown) {
         const queryPolygon = [];
         //the function starts by creating a polyline.
         //the polyline
@@ -66,72 +83,6 @@ function Drawing({ mapRef, polygonRef, setMarkers }) {
             map: map,
             clickable: false,
         });
-        console.log('map', map);
-        let move = window.google.maps.event.addDomListener(
-            map,
-            'touchmove',
-            function (e) {
-                console.log('start');
-                console.log(e);
-                // poly.getPath().push(e.latLng);
-                // console.log('end', e.latLng);
-            }
-        );
-
-        // window.google.maps.event.addListener(
-        //     map,
-        //     'touchend',
-        //     async function (e) {
-        //         window.google.maps.event.removeListener(move);
-        //         var path = poly.getPath();
-        //         poly.setMap(null);
-        //         poly = new window.google.maps.Polygon({ map: map, path: path });
-        //         // or clearInstanceListeners()
-        //         window.google.maps.event.clearListeners(
-        //             map.getDiv(),
-        //             'touchstart'
-        //         );
-
-        //         // OPTION 2 - REMOVE BOUNDRY / POLYGON
-        //         // Save polygon to the polygonRef
-        //         polygonRef.current = poly;
-        //         const vertices = poly.getPath();
-        //         for (let i = 0; i <= vertices.getLength(); i++) {
-        //             if (i === vertices.getLength()) {
-        //                 const xy = vertices.getAt(0);
-        //                 queryPolygon.push([xy.lng(), xy.lat()]);
-        //                 break;
-        //             }
-        //             const xy = vertices.getAt(i);
-        //             queryPolygon.push([xy.lng(), xy.lat()]);
-        //         }
-        //         try {
-        //             const response = await axios({
-        //                 url: '/api/shipwrecks',
-        //                 method: 'post',
-        //                 data: {
-        //                     queryPolygon,
-        //                 },
-        //             });
-        //             console.log('RESPONSE', response);
-        //             setMarkers(response.data);
-        //         } catch (error) {
-        //             console.log(error);
-        //         }
-        //         enable(map);
-        //     }
-        // );
-    }
-
-    function drawFreeHandMouse(map, polygonRef) {
-        const queryPolygon = [];
-        //the function starts by creating a polyline.
-        //the polyline
-        let poly = new window.google.maps.Polyline({
-            map: map,
-            clickable: false,
-        });
-
         //move-listener
         // As the mouse moves, the coordinates are pushed to the poly variable
         let move = window.google.maps.event.addListener(
@@ -155,7 +106,7 @@ function Drawing({ mapRef, polygonRef, setMarkers }) {
                 poly = new window.google.maps.Polygon({ map: map, path: path });
                 window.google.maps.event.clearListeners(
                     map.getDiv(),
-                    'mousedown'
+                    mousedown
                 );
 
                 // OPTION 2 - REMOVE BOUNDRY / POLYGON
@@ -173,14 +124,22 @@ function Drawing({ mapRef, polygonRef, setMarkers }) {
                 }
                 try {
                     const response = await axios({
-                        url: '/api/shipwrecks',
+                        url: '/api/properties/polygon',
                         method: 'post',
                         data: {
-                            queryPolygon,
+                            polygon: queryPolygon,
                         },
                     });
-                    console.log('RESPONSE', response);
-                    setMarkers(response.data);
+                    const response2 = await axios({
+                        url: '/api/properties/polygon',
+                        method: 'post',
+                        data: {
+                            polygon: queryPolygon,
+                            list: true,
+                        },
+                    });
+                    setMarkers(response.data.properties);
+                    setProperties(response2.data.properties);
                 } catch (error) {
                     console.log(error);
                 }

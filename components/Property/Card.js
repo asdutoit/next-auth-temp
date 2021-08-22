@@ -28,13 +28,14 @@ export default memo(function Card({
     onMap = false,
 }) {
     const { state, dispatch } = useContext(UserContext);
-    const price = numFormatter(property.community.price_max);
     const [favHover, setFavHover] = useState(false);
     const [shareHover, setShareHover] = useState(false);
+    const [visible, setVisible] = useState(false);
     const router = useRouter();
     const [session, loading] = useSession();
     const [saving, setSaving] = useState(false);
     const queryClient = useQueryClient();
+    const price = numFormatter(property.community.price_max);
 
     const mutation = useMutation(
         (propertyId) => axios.post(`/api/property/${propertyId}/fav`),
@@ -118,7 +119,6 @@ export default memo(function Card({
             if (session) {
                 // 2.   Toggle the property as favourite or un-favourite - DONE ON BACKEND
                 setSaving(true);
-                console.log(session);
                 mutation.mutate(property._id);
             } else {
                 // Set the favourite item in localstorage temporarily until user logged in.  See /buy page
@@ -142,9 +142,16 @@ export default memo(function Card({
     };
 
     return (
-        <>
+        <div
+            onMouseEnter={() => setVisible(true)}
+            onMouseLeave={() => setVisible(false)}
+        >
             <div className={classNames(rounded ? 'rounded-lg' : '', 'h-290')}>
-                <PhotoSlider photos={property.photos} rounded={rounded} />
+                <PhotoSlider
+                    photos={property.photos}
+                    rounded={rounded}
+                    visible={visible}
+                />
             </div>
             {!onMap ? (
                 <div
@@ -280,7 +287,7 @@ export default memo(function Card({
                     </svg>
                 </div>
             </div>
-        </>
+        </div>
     );
 },
 areEqual);

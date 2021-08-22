@@ -18,14 +18,15 @@ const defaultProperty = {
 };
 
 export default function buy() {
-    const [session, loading] = useSession();
     const { state, dispatch } = useContext(UserContext);
     const mapRef = useRef();
     const mapsRef = useRef();
     const polygonRef = useRef();
     const [currentLocation, setCurrentLocation] = useState(null);
     const [isHighlighted, setIsHighlighted] = useState(defaultProperty);
-    const { isLoading, error, data } = useQuery('properties', getProperties);
+    const [viewport, setViewport] = useState(null);
+    const [properties, setProperties] = useState([]);
+
     useQuery('favourites', getFavourites, {
         onSuccess: (o) => {
             dispatch({
@@ -56,27 +57,34 @@ export default function buy() {
         }
     }, []);
 
-    if (isLoading) return 'Loading...';
-    const { properties } = data;
+    // if (isLoading) return 'Loading...';
 
     return (
         <div className="flex flex-col h-full mdxl:flex-row buy-rent ">
             <div className="flex-grow h-full overflow-auto relative">
                 <MapComponent2
-                    properties={properties}
+                    setViewport={setViewport}
                     isHighlighted={isHighlighted}
                     mapRef={mapRef}
                     mapsRef={mapsRef}
                     polygonRef={polygonRef}
+                    setProperties={setProperties}
                 />
             </div>
             {isBrowser ? (
                 <div className="h-550 flex-grow-0 relative overflow-scroll overflow-y-hidden mdxl:overflow-auto mdxl:h-full flex-col flex-nowrap mdxl:w-700 ">
-                    <ListComponent
-                        properties={properties}
-                        setIsHighlighted={setIsHighlighted}
-                        mapRef={mapRef}
-                    />
+                    <div style={{ height: '100%' }}>
+                        {mapsRef.current && (
+                            <ListComponent
+                                viewport={viewport}
+                                setIsHighlighted={setIsHighlighted}
+                                mapRef={mapRef}
+                                properties={properties}
+                                setProperties={setProperties}
+                            />
+                        )}
+                    </div>
+                    <div className="bg-yellow-500 sticky left-0 bottom-0 h-12 w-full"></div>
                 </div>
             ) : null}
         </div>
@@ -133,7 +141,7 @@ export default function buy() {
 
 export async function getStaticProps() {
     const queryClient = new QueryClient();
-    await queryClient.prefetchQuery('properties', getProperties);
+    // await queryClient.prefetchQuery('properties', getProperties);
     await queryClient.prefetchQuery('favourites', getFavourites);
 
     return {

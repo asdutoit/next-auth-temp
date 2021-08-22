@@ -1,11 +1,26 @@
 import React, { useState, useEffect, Children } from 'react';
 import { useLayer, Arrow } from 'react-laag';
-import PhotoSlider from '../Property/PhotoSlider';
 import MapCard from '../Property/MapCard';
 import Card from '../Property/Card';
+import axios from 'axios';
 
-export default function MarkerComponent({ data, isdragging, children }) {
+export default function MarkerComponent({ propertyId, isdragging, children }) {
     const [isOpen, setOpen] = useState(false);
+    const [property, setProperty] = useState(undefined);
+    useEffect(() => {
+        const fetchProperty = async (id) => {
+            try {
+                const response = await axios.get(`/api/property/${id}`);
+                console.log('response', response.data.properties);
+                setProperty(response.data.properties[0]);
+            } catch (error) {
+                console.log('Error in the MarkerComponent');
+            }
+        };
+        if (isOpen) {
+            fetchProperty(propertyId);
+        }
+    }, [isOpen]);
 
     const { triggerProps, layerProps, arrowProps, renderLayer } = useLayer({
         isOpen,
@@ -35,7 +50,13 @@ export default function MarkerComponent({ data, isdragging, children }) {
             {isOpen &&
                 renderLayer(
                     <MapCard layerProps={layerProps}>
-                        <Card property={data} rounded="true" onMap="true" />
+                        {property && (
+                            <Card
+                                property={property}
+                                rounded="true"
+                                onMap="true"
+                            />
+                        )}
                     </MapCard>
                 )}
         </>

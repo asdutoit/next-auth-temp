@@ -13,6 +13,12 @@ import { userReducer } from '../context/Reducer';
 
 library.add(fab);
 
+export function reportWebVitals(metric) {
+    switch (metric.name) {
+        case 'FCP':
+            console.log(metric);
+    }
+}
 function MyApp({ Component, pageProps }) {
     const [queryClient] = React.useState(() => new QueryClient());
     const initialState = useContext(UserContext);

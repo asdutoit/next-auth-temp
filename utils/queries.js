@@ -9,6 +9,28 @@ const getProperties = async () => {
     return response.data;
 };
 
+const getPolygonProperties = async (polygon) => {
+    const response = await axios({
+        url: '/api/properties/polygon',
+        method: 'post',
+        data: {
+            polygon,
+        },
+    });
+    return response.data;
+};
+
+const getViewportProperties = async (viewport) => {
+    const response = await axios({
+        url: '/api/properties/viewport',
+        method: 'post',
+        data: {
+            viewport,
+        },
+    });
+    return response.data;
+};
+
 const getFavourites = async () => {
     const response = await axios.get(
         `${
@@ -18,4 +40,16 @@ const getFavourites = async () => {
     return response.data;
 };
 
-export { getProperties, getFavourites };
+const getProperty = async (id) => {
+    console.log('calllededelde');
+    const response = await axios.get(`/api/property/${id}`);
+    return response.data;
+};
+
+export {
+    getProperties,
+    getFavourites,
+    getPolygonProperties,
+    getViewportProperties,
+    getProperty,
+};
