@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import { useLocalState } from '../../utils/useLocalState';
 import { Drawing } from '../../components/maputils/Drawing';
@@ -16,10 +16,10 @@ function createMapOptions(maps) {
         scrollwheel: true,
         clickableIcons: false,
         drawing: true,
+        fullscreenControl: false,
     };
 }
 
-const default_center = { lat: 24.701627, lng: -79.026432 };
 const libraries = ['places', 'geometry', 'drawing', 'visualization'];
 
 const MarkerCluster = ({ children }) => children;

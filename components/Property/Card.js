@@ -146,7 +146,12 @@ export default memo(function Card({
             onMouseEnter={() => setVisible(true)}
             onMouseLeave={() => setVisible(false)}
         >
-            <div className={classNames(rounded ? 'rounded-lg' : '', 'h-290')}>
+            <div
+                className={classNames(
+                    rounded ? 'rounded-lg h-245' : 'h-290',
+                    'overflow-hidden'
+                )}
+            >
                 <PhotoSlider
                     photos={property.photos}
                     rounded={rounded}

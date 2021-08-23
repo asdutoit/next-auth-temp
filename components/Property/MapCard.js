@@ -8,7 +8,7 @@ export default function MapCard({ layerProps = null, children, fetchingData }) {
         <>
             {fetchingData ? null : (
                 <div
-                    className="w-320 h-290 bg-white shadow-xl rounded-lg relative flex flex-col"
+                    className="w-270 h-245 bg-white shadow-3xl rounded-lg relative flex flex-col"
                     {...layerProps}
                 >
                     {children}

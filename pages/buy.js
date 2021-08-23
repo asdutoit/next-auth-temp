@@ -9,6 +9,7 @@ import { QueryClient, useQuery } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
 import { UserContext } from '../context/Context';
 import { getProperties, getFavourites } from '../utils/queries';
+import Pagination from '../components/List/Pagination';
 
 const defaultProperty = {
     property_id: '',
@@ -60,7 +61,7 @@ export default function buy() {
     // if (isLoading) return 'Loading...';
 
     return (
-        <div className="flex flex-col h-full mdxl:flex-row buy-rent ">
+        <div className="flex h-full flex-row buy-rent ">
             <div className="flex-grow h-full overflow-auto relative">
                 <MapComponent2
                     setViewport={setViewport}
@@ -72,19 +73,30 @@ export default function buy() {
                 />
             </div>
             {isBrowser ? (
-                <div className="h-550 flex-grow-0 relative overflow-scroll overflow-y-hidden mdxl:overflow-auto mdxl:h-full flex-col flex-nowrap mdxl:w-700 ">
-                    <div style={{ height: '100%' }}>
-                        {mapsRef.current && (
-                            <ListComponent
-                                viewport={viewport}
-                                setIsHighlighted={setIsHighlighted}
-                                mapRef={mapRef}
-                                properties={properties}
-                                setProperties={setProperties}
-                            />
-                        )}
+                // <div className="h-550 flex-grow-0 relative overflow-scroll overflow-y-hidden mdxl:overflow-auto mdxl:h-full flex-col flex-nowrap mdxl:w-700 bg-green-500">
+                <div className="flex-grow-0 w-350 relative h-full flex-col mdxl:w-700 overflow-auto">
+                    <div className="list__info bg-yellow-300 h-12">
+                        List Information
                     </div>
-                    <div className="bg-yellow-500 sticky left-0 bottom-0 h-12 w-full"></div>
+                    <div className="list__results__section ">
+                        <div className="list__results">
+                            {/* <div style={{ height: '100%' }}> */}
+                            {mapsRef.current && (
+                                <ListComponent
+                                    viewport={viewport}
+                                    setIsHighlighted={setIsHighlighted}
+                                    mapRef={mapRef}
+                                    properties={properties}
+                                    setProperties={setProperties}
+                                />
+                            )}
+                            {/* </div> */}
+                        </div>
+                        {/* <div className="list__pagination bg-red-500">
+                            Pagination
+                        </div> */}
+                        <Pagination />
+                    </div>
                 </div>
             ) : null}
         </div>

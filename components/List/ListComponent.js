@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+import React, { useEffect } from 'react';
 import ListCard from '../Property/ListCard';
 import Card from '../Property/Card';
 import axios from 'axios';
@@ -33,18 +32,22 @@ export default function ListComponent({
     return (
         <>
             {properties.length > 0 ? (
-                <div className="flex flex-row h-full relative mdxl:grid mdxl:grid-cols-cardviews p-2 mdxl:p-5 gap-4 overflow-auto">
-                    {properties.map((property) => (
-                        <ListCard
-                            key={property._id}
-                            property={property}
-                            setIsHighlighted={setIsHighlighted}
-                            mapRef={mapRef}
-                        >
-                            <Card property={property} mapRef={mapRef} />
-                        </ListCard>
-                    ))}
-                </div>
+                <>
+                    {/* might need to include 'overflow-auto' */}
+                    <div className="h-full relative grid grid-cols-cardviews p-2 mdxl:p-5 gap-4 overflow-auto">
+                        {properties.map((property) => (
+                            <ListCard
+                                key={property._id}
+                                property={property}
+                                setIsHighlighted={setIsHighlighted}
+                                mapRef={mapRef}
+                                className="w-full h-full"
+                            >
+                                <Card property={property} mapRef={mapRef} />
+                            </ListCard>
+                        ))}
+                    </div>
+                </>
             ) : (
                 <div>No properties listed in this area</div>
             )}

@@ -84,12 +84,12 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                     <Image
                         src={photo.href}
                         layout="responsive"
-                        width="512"
-                        height="465"
+                        width="256"
+                        height="232.5"
                         quality={25}
                         key={i}
-                        loading="eager"
                         // priority="true"
+                        loading="eager"
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''
                         }`}

@@ -1,20 +1,4 @@
-import React, { useState, memo, useEffect } from 'react';
-import PhotoSlider from './PhotoSlider';
-import { numFormatter } from '../../utils/numFormatter';
-import axios from 'axios';
-import { signIn, useSession } from 'next-auth/client';
-import { useRouter } from 'next/router';
-import {
-    useQuery,
-    useQueryClient,
-    useMutation,
-    notifyManager,
-} from 'react-query';
-
-const updater = async (propertyId) => {
-    const res = await axios.post(`/api/property/${propertyId}/fav`);
-    return res;
-};
+import React, { memo } from 'react';
 
 export default memo(function ListCard({
     property,
@@ -23,7 +7,7 @@ export default memo(function ListCard({
 }) {
     return (
         <div
-            className="relative w-320 h-290 transition duration-100 ease-in-out transform hover:scale-102 "
+            className="relative transition duration-100 ease-in-out transform hover:scale-102 "
             // FIXME: --- The following functions may have an adverse affect on performance.  Optimize ---
             // UPDATE:  Wrapped the component in React.memo.   Made a considerable difference.
             onMouseEnter={() =>

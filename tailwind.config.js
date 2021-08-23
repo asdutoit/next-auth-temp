@@ -16,12 +16,15 @@ module.exports = {
             },
             width: {
                 250: '250px',
+                270: '270px',
                 320: '320px',
+                350: '350px',
                 700: '700px',
             },
             height: {
                 150: '150px',
                 230: '230px',
+                245: '245px',
                 290: '290px',
                 365: '365px',
                 430: '430px',
@@ -35,6 +38,12 @@ module.exports = {
             },
             fontSize: {
                 tiny: '0.7rem',
+            },
+            inset: {
+                '00': '-1px',
+            },
+            boxShadow: {
+                '3xl': 'rgb(0 0 0 / 28%) 0px 8px 28px',
             },
         },
     },
