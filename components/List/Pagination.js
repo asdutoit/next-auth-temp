@@ -1,7 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
 
-export default function Pagination() {
+export default function Pagination({ count }) {
     return (
         <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div className="flex-1 flex justify-between sm:hidden">
@@ -23,7 +23,7 @@ export default function Pagination() {
                     <p className="text-sm text-gray-700">
                         Showing <span className="font-medium">1</span> to{' '}
                         <span className="font-medium">10</span> of{' '}
-                        <span className="font-medium">97</span> results
+                        <span className="font-medium">{count}</span> results
                     </p>
                 </div>
                 <div>

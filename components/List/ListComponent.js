@@ -9,6 +9,7 @@ export default function ListComponent({
     mapRef,
     properties,
     setProperties,
+    setCount,
 }) {
     useEffect(() => {
         const fetchProperties = async (viewport) => {
@@ -21,7 +22,9 @@ export default function ListComponent({
                         list: true,
                     },
                 });
+                console.log(response);
                 setProperties(response.data.properties);
+                setCount(response.data.count);
             } catch (error) {
                 console.log('error', error);
             }

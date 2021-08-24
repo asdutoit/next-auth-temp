@@ -27,6 +27,7 @@ export default function buy() {
     const [isHighlighted, setIsHighlighted] = useState(defaultProperty);
     const [viewport, setViewport] = useState(null);
     const [properties, setProperties] = useState([]);
+    const [count, setCount] = useState(0);
 
     useQuery('favourites', getFavourites, {
         onSuccess: (o) => {
@@ -88,6 +89,7 @@ export default function buy() {
                                     mapRef={mapRef}
                                     properties={properties}
                                     setProperties={setProperties}
+                                    setCount={setCount}
                                 />
                             )}
                             {/* </div> */}
@@ -95,7 +97,7 @@ export default function buy() {
                         {/* <div className="list__pagination bg-red-500">
                             Pagination
                         </div> */}
-                        <Pagination />
+                        <Pagination count={count} />
                     </div>
                 </div>
             ) : null}

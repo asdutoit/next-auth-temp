@@ -21,60 +21,6 @@ body {
     border-radius: 10px;
 }
 
-/* .map-price-marker {
-    font-family: 'Helvetica';
-    left: -37px;
-    top: -25px;
-}
-.map-price-marker:before,
-.map-price-marker:after {
-    position: absolute;
-    content: '';
-    border-style: solid;
-}
-
-.map-price-marker:after {
-    left: 44px;
-    top: 23px;
-    border-width: 5px;
-    border-color: white transparent transparent;
-}
-
-.map-price-marker:before {
-    left: 43px;
-    top: 24px;
-    border-width: 6px;
-    border-color: white transparent transparent;
-}
-
-.map-price-marker.visited:hover {
-    background-color: #7b8d93;
-    color: #fff;
-    border-color: #5b6a6f;
-}
-
-.map-price-marker.visited:hover:after {
-    border-color: #7b8d93 transparent transparent;
-}
-
-.map-price-marker.visited:hover:before {
-    border-color: #5b6a6f transparent transparent;
-}
-
-.map-price-marker:hover {
-    background-color: #f2f2f2;
-    color: black;
-    border-color: gray;
-}
-
-.map-price-marker:hover:after {
-    border-color: #f2f2f2 transparent transparent;
-}
-
-.map-price-marker:hover:before {
-    border-color: gray transparent transparent;
-} */
-
 .map-price-marker {
     left: -24px;
     top: -25px;

@@ -47,11 +47,16 @@ export default async function handle(req, res) {
         limit = 200;
     }
 
+    const count = await db
+        .collection('newyorksampleproperties2')
+        .find(filter, { projection: projection })
+        .count();
+
     const properties = await db
         .collection('newyorksampleproperties2')
         .find(filter, { projection: projection })
         .limit(limit)
         .toArray();
 
-    res.status(200).send({ properties });
+    res.status(200).send({ properties, count });
 }
