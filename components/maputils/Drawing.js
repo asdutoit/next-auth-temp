@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { faWindows } from '@fortawesome/free-brands-svg-icons';
+import { classNames } from '../../utils/general';
+
+function createMultiPolyon(array) {
+    const multipoly = [];
+    let adjustedArray = [...array];
+    for (let i = 0; i <= array.length; ) {
+        const result = testForClosedPolygon(adjustedArray);
+        multipoly.push([result[0]]);
+        i = adjustedArray.length - parseInt(result[1]);
+        adjustedArray.splice(0, result[1]);
+    }
+    multipoly.pop();
+    return multipoly;
+}
 
 function Drawing({
     mapRef,
@@ -8,9 +22,11 @@ function Drawing({
     setMarkers,
     setBusyDrawing,
     setProperties,
+    draw,
+    setDraw,
 }) {
-    const [draw, setDraw] = useState(false);
     const [drawCount, setDrawCount] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const handleDraw = (e) => {
         e.preventDefault();
@@ -50,8 +66,10 @@ function Drawing({
         const polygon = polygonRef.current;
         polygon.setMap(null);
         setDrawCount(0);
+        setDraw(false);
         const viewport = mapRef.current.getBounds();
         try {
+            setLoading(true);
             const response = await axios({
                 url: '/api/properties/viewport',
                 method: 'post',
@@ -69,6 +87,7 @@ function Drawing({
             });
             setMarkers(response.data.properties);
             setProperties(response2.data.properties);
+            setLoading(false);
         } catch (error) {
             console.log('error', error);
         }
@@ -116,32 +135,39 @@ function Drawing({
                 for (let i = 0; i <= vertices.getLength(); i++) {
                     if (i === vertices.getLength()) {
                         const xy = vertices.getAt(0);
+                        if (!xy) {
+                            console.log('xy is undefined');
+                            // TODO:  Add a snackbar that alerts the user to a drawing mistake and that he needs to start over
+                            break;
+                        }
                         queryPolygon.push([xy.lng(), xy.lat()]);
                         break;
                     }
                     const xy = vertices.getAt(i);
                     queryPolygon.push([xy.lng(), xy.lat()]);
                 }
-                try {
-                    const response = await axios({
-                        url: '/api/properties/polygon',
-                        method: 'post',
-                        data: {
-                            polygon: queryPolygon,
-                        },
-                    });
-                    const response2 = await axios({
-                        url: '/api/properties/polygon',
-                        method: 'post',
-                        data: {
-                            polygon: queryPolygon,
-                            list: true,
-                        },
-                    });
-                    setMarkers(response.data.properties);
-                    setProperties(response2.data.properties);
-                } catch (error) {
-                    console.log(error);
+                if (queryPolygon.length > 0) {
+                    try {
+                        const response = await axios({
+                            url: '/api/properties/polygon',
+                            method: 'post',
+                            data: {
+                                polygon: queryPolygon,
+                            },
+                        });
+                        const response2 = await axios({
+                            url: '/api/properties/polygon',
+                            method: 'post',
+                            data: {
+                                polygon: queryPolygon,
+                                list: true,
+                            },
+                        });
+                        setMarkers(response.data.properties);
+                        setProperties(response2.data.properties);
+                    } catch (error) {
+                        console.log('Error', error);
+                    }
                 }
                 enable(map);
             }
@@ -166,7 +192,7 @@ function Drawing({
     }
 
     function enable(map) {
-        setDraw(false);
+        // setDraw(false);
         setDrawCount(1);
         map.setOptions({
             draggable: true,
@@ -188,9 +214,19 @@ function Drawing({
             ) : (
                 <button
                     onClick={handleDraw}
-                    className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none  "
+                    disabled={loading}
+                    className={classNames(
+                        loading
+                            ? 'bg-indigo-400'
+                            : 'bg-indigo-600 hover:bg-indigo-700',
+                        'py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none'
+                    )}
                 >
-                    {draw === false ? 'DRAW' : 'APPLY'}
+                    {draw === false && loading === true
+                        ? 'Refreshing...'
+                        : draw === false && loading === false
+                        ? 'DRAW'
+                        : 'APPLY'}
                 </button>
             )}
         </div>

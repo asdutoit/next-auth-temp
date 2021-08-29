@@ -10,6 +10,7 @@ export default function ListComponent({
     properties,
     setProperties,
     setCount,
+    draw,
 }) {
     useEffect(() => {
         const fetchProperties = async (viewport) => {
@@ -22,14 +23,15 @@ export default function ListComponent({
                         list: true,
                     },
                 });
-                console.log(response);
                 setProperties(response.data.properties);
                 setCount(response.data.count);
             } catch (error) {
                 console.log('error', error);
             }
         };
-        fetchProperties(viewport);
+        if (!draw) {
+            fetchProperties(viewport);
+        }
     }, [viewport]);
 
     return (

@@ -28,6 +28,9 @@ export default function buy() {
     const [viewport, setViewport] = useState(null);
     const [properties, setProperties] = useState([]);
     const [count, setCount] = useState(0);
+    const [draw, setDraw] = useState(false);
+
+    //TODO: Move some state to global state.   Too many props being shared.   No need for prop drilling
 
     useQuery('favourites', getFavourites, {
         onSuccess: (o) => {
@@ -71,6 +74,8 @@ export default function buy() {
                     mapsRef={mapsRef}
                     polygonRef={polygonRef}
                     setProperties={setProperties}
+                    draw={draw}
+                    setDraw={setDraw}
                 />
             </div>
             {isBrowser ? (
@@ -90,6 +95,7 @@ export default function buy() {
                                     properties={properties}
                                     setProperties={setProperties}
                                     setCount={setCount}
+                                    draw={draw}
                                 />
                             )}
                             {/* </div> */}

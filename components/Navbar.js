@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
@@ -47,7 +48,7 @@ export default function Navbar() {
                                 <div>
                                     <Link href="/">
                                         <a className="flex items-center py-5 px-2 text-gray-700 hover:text-gray-900">
-                                            <svg
+                                            {/*<svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 className="h-6 w-6 text-yellow-300 mr-2"
                                                 fill="none"
@@ -63,7 +64,12 @@ export default function Navbar() {
                                             </svg>
                                             <span className="font-bold">
                                                 Happy Homes
-                                            </span>
+                                            </span> */}
+                                            <img
+                                                alt="..."
+                                                className="w-36 mr-1"
+                                                src="/img/Homerun.png"
+                                            />
                                         </a>
                                     </Link>
                                 </div>

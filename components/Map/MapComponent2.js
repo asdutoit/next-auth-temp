@@ -44,6 +44,8 @@ export default function MapComponent2({
     setViewport,
     isHighlighted,
     setProperties,
+    draw,
+    setDraw,
 }) {
     const [markers, setMarkers] = useState([]);
     const [points, setPoints] = useState([]);
@@ -156,6 +158,8 @@ export default function MapComponent2({
                 setMarkers={setMarkers}
                 setBusyDrawing={setBusyDrawing}
                 setProperties={setProperties}
+                draw={draw}
+                setDraw={setDraw}
                 type="rent" // rent or buy
             />
             <GoogleMapReact
@@ -191,7 +195,7 @@ export default function MapComponent2({
                                     className={classNames(
                                         zoom > 19
                                             ? ''
-                                            : 'rounded-full h-6 w-6 flex items-center justify-center bg-indigo-400 z-10 cursor-pointer transition duration-100 ease-in-out transform hover:-translate-y-1 hover:scale-110 '
+                                            : 'rounded-full h-6 w-6 flex items-center justify-center bg-blue-600 z-10 cursor-pointer transition duration-100 ease-in-out transform hover:-translate-y-1 hover:scale-110 '
                                     )}
                                     onClick={() => {
                                         const expansionZoom = Math.min(
@@ -213,7 +217,7 @@ export default function MapComponent2({
                                             isdragging
                                         )
                                     ) : (
-                                        <span className="font-bold">
+                                        <span className="font-bold text-white">
                                             {pointCount}
                                         </span>
                                     )}

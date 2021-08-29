@@ -4,8 +4,6 @@ export default async function handle(req, res) {
     const { client } = await connectToDatabase();
     const db = await client.db(process.env.PROPERTY_DB);
 
-    console.log('VIEWPORT:', req.body);
-
     const filter = {
         coordinates: {
             $geoWithin: {
