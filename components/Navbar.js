@@ -47,7 +47,7 @@ export default function Navbar() {
                                 {/* <!-- logo --> */}
                                 <div>
                                     <Link href="/">
-                                        <a className="flex items-center py-5 px-2 text-gray-700 hover:text-gray-900">
+                                        <a className="flex items-center py-5 px-2 text-gray-700 hover:text-gray-900 mb-2">
                                             {/*<svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 className="h-6 w-6 text-yellow-300 mr-2"
@@ -68,7 +68,7 @@ export default function Navbar() {
                                             <img
                                                 alt="..."
                                                 className="w-36 mr-1"
-                                                src="/img/Homerun.png"
+                                                src="/img/Homerun - single -v2.png"
                                             />
                                         </a>
                                     </Link>
