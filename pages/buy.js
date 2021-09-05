@@ -29,6 +29,8 @@ export default function buy() {
     const [properties, setProperties] = useState([]);
     const [count, setCount] = useState(0);
     const [draw, setDraw] = useState(false);
+    let skip = 0;
+    let limit = 20;
 
     //TODO: Move some state to global state.   Too many props being shared.   No need for prop drilling
 
@@ -96,6 +98,8 @@ export default function buy() {
                                     setProperties={setProperties}
                                     setCount={setCount}
                                     draw={draw}
+                                    limit={limit}
+                                    skip={skip}
                                 />
                             )}
                             {/* </div> */}
@@ -103,61 +107,13 @@ export default function buy() {
                         {/* <div className="list__pagination bg-red-500">
                             Pagination
                         </div> */}
-                        <Pagination count={count} />
+                        <Pagination count={count} limit={limit} />
                     </div>
                 </div>
             ) : null}
         </div>
     );
 }
-
-// ======= UNCOMMENT FOR REAL API CALL ========
-// ============================================
-// export async function getStaticProps() {
-//     const options = {
-//         method: 'GET',
-//         url: 'https://realtor.p.rapidapi.com/properties/v2/list-for-rent',
-//         params: {
-//             city: 'New York City',
-//             state_code: 'NY',
-//             limit: '10',
-//             offset: '0',
-//             sort: 'relevance',
-//         },
-//         headers: {
-//             'x-rapidapi-key':
-//                 '9a83b48da5msh68c0186833d4b88p114873jsn9291b3278b3e',
-//             'x-rapidapi-host': 'realty-in-us.p.rapidapi.com',
-//         },
-//     };
-
-//     const response = await axios.request(options);
-
-//     return {
-//         props: {
-//             properties: response.data.properties,
-//         },
-//     };
-// }
-// ============================================
-
-// export async function getStaticProps() {
-//     const queryClient = new QueryClient();
-//     const { client } = await connectToDatabase();
-
-//     const db = await client.db('HappyPropertiesTest');
-//     const properties = await db
-//         .collection('newyorksampleproperties')
-//         .find({})
-//         .sort({ metacritic: -1 })
-//         .toArray();
-
-//     return {
-//         props: {
-//             properties: JSON.parse(JSON.stringify(properties)),
-//         },
-//     };
-// }
 
 export async function getStaticProps() {
     const queryClient = new QueryClient();

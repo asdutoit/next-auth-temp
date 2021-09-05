@@ -11,6 +11,8 @@ export default function ListComponent({
     setProperties,
     setCount,
     draw,
+    skip,
+    limit,
 }) {
     useEffect(() => {
         const fetchProperties = async (viewport) => {
@@ -20,6 +22,8 @@ export default function ListComponent({
                     method: 'post',
                     data: {
                         viewport,
+                        skip,
+                        limit,
                         list: true,
                     },
                 });

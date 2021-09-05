@@ -60,6 +60,7 @@ const settings = {
     slidesToScroll: 1,
     // nextArrow: <ChevronRight />,
     // prevArrow: <ChevronLeft />,
+    lazyLoad: true,
     swipe: false,
     appendDots: (dots) => (
         <div
