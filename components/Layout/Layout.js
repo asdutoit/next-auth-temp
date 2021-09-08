@@ -1,6 +1,6 @@
 // import Banner from "../Banner";
 import Head from 'next/head';
-import Navbar from '../Navbar';
+import Navbar from '../Navigation/Navbar';
 import styles from './Layout.module.css';
 import { useSession } from 'next-auth/client';
 

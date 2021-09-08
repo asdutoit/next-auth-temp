@@ -10,6 +10,8 @@ module.exports = {
             colors: {
                 customGray: 'rgba(50, 62, 81, 1.00)',
                 customGray2: 'rgba(37, 54, 70, 1.00)',
+                cosmiclatte: 'rgba(255, 249, 234, 1.00)',
+                FAFA: '#FAFAFA',
             },
             gridTemplateColumns: {
                 cardviews: 'repeat(auto-fill, minmax(284px, 1fr))',
@@ -20,6 +22,7 @@ module.exports = {
                 320: '320px',
                 350: '350px',
                 700: '700px',
+                380: '380px',
             },
             height: {
                 150: '150px',

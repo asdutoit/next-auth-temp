@@ -3,9 +3,12 @@ import { useLayer, Arrow } from 'react-laag';
 import MapCard from '../Property/MapCard';
 import Card from '../Property/Card';
 import axios from 'axios';
+import { isBrowser } from 'react-device-detect';
+import MobileCard from '../Property/MobileCard';
 
 export default function MarkerComponent({ propertyId, isdragging, children }) {
     const [isOpen, setOpen] = useState(false);
+    const [mobileIsOpen, setMobileIsOpen] = useState(false);
     const [property, setProperty] = useState(undefined);
     const [fetchingData, setFetchingData] = useState(false);
 
@@ -20,10 +23,10 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
                 console.log('Error in the MarkerComponent');
             }
         };
-        if (isOpen) {
+        if (isOpen || mobileIsOpen) {
             fetchProperty(propertyId);
         }
-    }, [isOpen]);
+    }, [isOpen, mobileIsOpen]);
 
     const { triggerProps, layerProps, arrowProps, renderLayer } = useLayer({
         isOpen,
@@ -47,24 +50,41 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
 
     return (
         <>
-            <div {...triggerProps} onClick={() => setOpen(!isOpen)}>
-                {childrenWithProps}
-            </div>
-            {isOpen &&
-                renderLayer(
-                    <MapCard
-                        layerProps={layerProps}
-                        fetchingData={fetchingData}
-                    >
-                        {property && (
-                            <Card
-                                property={property}
-                                rounded="true"
-                                onMap="true"
-                            />
+            {isBrowser ? (
+                <>
+                    <div {...triggerProps} onClick={() => setOpen(!isOpen)}>
+                        {childrenWithProps}
+                    </div>
+                    {isOpen &&
+                        renderLayer(
+                            <MapCard
+                                layerProps={layerProps}
+                                fetchingData={fetchingData}
+                            >
+                                {property && (
+                                    <Card
+                                        property={property}
+                                        rounded="true"
+                                        onMap="true"
+                                    />
+                                )}
+                            </MapCard>
                         )}
-                    </MapCard>
-                )}
+                </>
+            ) : (
+                <>
+                    <div onClick={() => setMobileIsOpen(!mobileIsOpen)}>
+                        {childrenWithProps}
+                    </div>
+                    {mobileIsOpen && property ? (
+                        <MobileCard
+                            mobileIsOpen={mobileIsOpen}
+                            setMobileIsOpen={setMobileIsOpen}
+                            property={property}
+                        />
+                    ) : null}
+                </>
+            )}
         </>
     );
 }

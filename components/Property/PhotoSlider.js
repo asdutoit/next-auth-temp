@@ -76,7 +76,18 @@ const settings = {
 function PhotoSlider({ photos, rounded = false, visible }) {
     return (
         <div>
-            <Slider
+            <Image
+                src={photos[0].href}
+                layout="responsive"
+                width="256"
+                height="232.5"
+                quality={25}
+                // key={i}
+                priority="true"
+                // loading="eager"
+                className={`object-cover ${rounded ? 'rounded-lg' : ''}`}
+            />
+            {/* <Slider
                 {...settings}
                 nextArrow={<ChevronRight visible={visible} />}
                 prevArrow={<ChevronLeft visible={visible} />}
@@ -89,14 +100,14 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         height="232.5"
                         quality={25}
                         key={i}
-                        // priority="true"
-                        loading="eager"
+                        priority="true"
+                        // loading="eager"
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''
                         }`}
                     />
                 ))}
-            </Slider>
+            </Slider> */}
         </div>
     );
 }

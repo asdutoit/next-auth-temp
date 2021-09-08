@@ -4,4 +4,9 @@ const navigationLeft = [
     { name: 'Rent', href: '/rent', current: false },
 ];
 
-export { navigationLeft };
+const navigationRight = [
+    { name: 'New Developments', href: '/newdev', current: false },
+    { name: 'Agents', href: '/agents', current: false },
+];
+
+export { navigationLeft, navigationRight };

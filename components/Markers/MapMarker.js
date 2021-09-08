@@ -2,11 +2,11 @@ import React from 'react';
 import { numFormatter } from '../../utils/numFormatter';
 
 const MapMarker = ({
-    text,
+    text = '0.00',
     conditionalClass = null,
     clusterId = undefined,
     isOpen,
-    currency = undefined,
+    currency = 'R',
 }) => {
     const price = numFormatter(parseInt(text));
 
