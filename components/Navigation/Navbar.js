@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
@@ -82,7 +83,7 @@ export default function Navbar() {
                                                         link.href
                                                         ? 'bg-cosmiclatte text-gray-900 border-yellow-400 border-2'
                                                         : 'text-gray-700 hover:bg-cosmiclatte hover:text-gray-800',
-                                                    'px-3 py-2 rounded-md text-md font-bold'
+                                                    'px-3 py-2 rounded-md text-md font-medium'
                                                 )}
                                             >
                                                 {link.name.toUpperCase()}
@@ -119,15 +120,17 @@ export default function Navbar() {
                                                             <span className="sr-only">
                                                                 Open user menu
                                                             </span>
-                                                            <img
-                                                                className="h-8 w-8 rounded-full"
+                                                            <Image
+                                                                className="h-8 w-8 rounded-full border-2 border-black"
                                                                 src={
                                                                     session
                                                                         .session
                                                                         .user
                                                                         .image
                                                                 }
-                                                                alt=""
+                                                                height="40"
+                                                                width="40"
+                                                                alt="avatar"
                                                             />
                                                         </Menu.Button>
                                                     </div>

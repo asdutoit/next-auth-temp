@@ -4,8 +4,8 @@ import { classNames } from '../../../utils/general';
 function Progress({ steps, progress, setProgressStatus }) {
     return (
         <div className="w-72 mr-16">
-            {steps.map((step) => (
-                <>
+            {steps.map((step, i) => (
+                <div key={i}>
                     <div className="text-sm font-normal text-gray-700 p-3 flex items-center">
                         <div
                             className={classNames(
@@ -30,7 +30,7 @@ function Progress({ steps, progress, setProgressStatus }) {
                     {step.line && (
                         <div className="border-l-2 border-gray-300 h-8 rounded-sm ml-6"></div>
                     )}
-                </>
+                </div>
             ))}
         </div>
     );

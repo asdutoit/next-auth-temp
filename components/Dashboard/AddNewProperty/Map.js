@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import GoogleMapReact from 'google-map-react';
 import { useLocalState } from '../../../utils/useLocalState';
-import { classNames } from '../../../utils/general';
-import { getViewportProperties } from '../../../utils/queries';
 import MapMarker from '../../Markers/MapMarker';
 import Geocode from 'react-geocode';
+import { updateState } from './AddProperty';
+import { useStateMachine } from 'little-state-machine';
 
 function createMapOptions(maps) {
     return {
@@ -40,7 +40,7 @@ export default function Map({
         lng: -79.026432,
     });
     const [maploaded, setMapLoaded] = useState(false);
-
+    const { state, actions } = useStateMachine({ updateState });
     const [viewport, setViewport] = useState(null);
 
     const onBoundsChanged = async (center, zoom, bounds) => {
@@ -70,6 +70,18 @@ export default function Map({
     const onMapLoad = async ({ map, maps }) => {
         mapRef.current = map;
         mapsRef.current = maps;
+        if (state.PropertyDetails.lat) {
+            setMarker({
+                lat: state.PropertyDetails.lat,
+                lng: state.PropertyDetails.lng,
+            });
+        }
+        if (marker) {
+            mapRef.current.panTo({
+                lat: state.PropertyDetails.lat,
+                lng: state.PropertyDetails.lng,
+            });
+        }
         const viewport = mapRef.current.getBounds();
         const bounds = JSON.parse(JSON.stringify(viewport));
         setViewport(bounds);
@@ -90,9 +102,13 @@ export default function Map({
         Geocode.fromLatLng(lat, lng).then(
             (response) => {
                 const address = response.results[0].formatted_address;
-                console.log(address);
                 setAddress('Address', address);
                 setStateaddress(address);
+                actions.updateState({
+                    address,
+                    lat,
+                    lng,
+                });
                 setAddress('Address Latitude', lat);
                 setAddress('Address Longitude', lng);
             },
@@ -103,7 +119,7 @@ export default function Map({
     };
 
     return (
-        <>
+        <div className="w-full h-full">
             <GoogleMapReact
                 bootstrapURLKeys={{
                     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API,
@@ -126,6 +142,6 @@ export default function Map({
                     <MapMarker lat={marker.lat} lng={marker.lng} text={price} />
                 )}
             </GoogleMapReact>
-        </>
+        </div>
     );
 }

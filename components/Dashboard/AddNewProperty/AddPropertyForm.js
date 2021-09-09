@@ -4,52 +4,59 @@ import { classNames } from '../../../utils/general';
 import Map from '../AddNewProperty/Map';
 import Geocode from 'react-geocode';
 import { usePlacesWidget } from 'react-google-autocomplete';
+import { useStateMachine } from 'little-state-machine';
+import { updateState } from './AddProperty';
+import Dropdown from './AtomicElements/Dropdown';
+import Input from './AtomicElements/Input';
+import Select from './AtomicElements/Select';
+import TextArea from './AtomicElements/TextArea';
 
-// function IsolateReRender({ control }) {
-//     const address = useWatch({
-//         control,
-//         name: 'Address', // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
-//         defaultValue: '', // default value before the render
-//     });
-//     Geocode.fromAddress(address).then(
-//         (response) => {
-//             const { lat, lng } = response.results[0].geometry.location;
-//             console.log(lat, lng);
-//         },
-//         (error) => {
-//             console.error(error);
-//         }
-//     );
-//     console.log(address);
-//     return <div>{address}</div>; // only re-render at the component level, when firstName changes
-// }
+const listingType = [
+    { id: 1, name: 'For Sale' },
+    { id: 2, name: 'To Rent' },
+];
 
-export default function AddPropertyForm() {
+const propertyType = [
+    { id: 1, name: 'House' },
+    { id: 2, name: 'Townhouse' },
+    { id: 3, name: 'Apartment' },
+    { id: 4, name: 'Farm' },
+    { id: 5, name: 'Plot' },
+];
+
+const newDevelopment = [
+    { id: 1, name: 'False' },
+    { id: 2, name: 'True' },
+];
+
+export default function AddPropertyForm({ setProgressStatus }) {
     const {
         register,
         handleSubmit,
         formState: { errors },
         watch,
         setValue,
-        control,
     } = useForm();
-    const onSubmit = (data) => console.log(data);
+    const { state, actions } = useStateMachine({ updateState });
     const [marker, setMarker] = useState(null);
     const mapRef = useRef();
     const mapsRef = useRef();
-    const [stateaddress, setStateaddress] = useState('');
-
-    console.log('Errors: ', errors);
+    const [stateaddress, setStateaddress] = useState(
+        state.PropertyDetails.address
+    );
 
     const { ref: inputref } = usePlacesWidget({
         apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API,
         onPlaceSelected: (place) => {
-            console.log(place);
-            const stringarray = place.formatted_address.split(',');
-            console.log(stringarray);
             setValue('Address Latitude', place.geometry.location.lat());
             setValue('Address Longitude', place.geometry.location.lng());
             setValue('Address', place.formatted_address);
+            setStateaddress(place.formatted_address);
+            actions.updateState({
+                address: place.formatted_address,
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng(),
+            });
             setMarker({
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng(),
@@ -66,84 +73,95 @@ export default function AddPropertyForm() {
         },
     });
 
+    const onSubmit = (data) => {
+        console.log('data', data);
+        actions.updateState({
+            listingName: data['Listing Name'],
+            listingType: data['Listing Type'],
+            apt: data['Apartment / Suite'],
+            propertyType: data['Property Type'],
+            beds: parseFloat(data['Bedrooms']),
+            baths: parseFloat(data['Bathrooms']),
+            garages: parseFloat(data['Garages']),
+            pool: data['Pool'],
+            plotSize: parseFloat(data['Plot Size (sqm)']),
+            garageSize: parseFloat(data['Garage Size (sqm)']),
+            floorSize: parseFloat(data['Floor Size (sqm)']),
+            price: parseFloat(data['Price']),
+            description: data['Description'],
+            yearBuilt: data['Year Built'],
+            pets: data['Pets'],
+            garden: data['Garden'],
+            flatlet: data['Flatlet'],
+        });
+        setProgressStatus('media');
+    };
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-12 gap-6">
-                <div className="col-span-6 sm:col-span-6">
-                    <label
-                        htmlFor="listing-name"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Listing Name
-                    </label>
-
-                    <input
+                {/* Listing Name */}
+                <div className="col-span-12 sm:col-span-6 md:col-span-3">
+                    <Input
+                        name="Listing Name"
+                        errors={errors}
+                        htmlId="listing_name"
+                        defaultValue={state.PropertyDetails.listingName}
+                        register={register}
                         type="text"
-                        placeholder="Listing Name"
-                        name="listing-name"
-                        id="listing-name"
-                        className={classNames(
-                            errors['Listing Name']?.type === 'required'
-                                ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                            'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                        )}
-                        {...register('Listing Name', {
-                            required: true,
-                            maxLength: 80,
-                        })}
+                        required={true}
                     />
-                    {errors['Listing Name']?.type === 'required' ? (
-                        <span className="text-red-600 font-normal text-sm">
-                            Listing name is required
-                        </span>
-                    ) : null}
                 </div>
-                <div className="col-span-6 sm:col-span-6">
-                    <label
-                        htmlFor="listing-name"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Listing Type
-                    </label>
-                    <select
-                        {...register('Listing Type', { required: true })}
-                        className={classNames(
-                            errors['Listing Type']?.type === 'required'
-                                ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                            'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                        )}
-                    >
-                        <option value="For Sale">For Sale</option>
-                        <option value=" For Rent">For Rent</option>
-                    </select>
-                    {errors['Listing Type']?.type === 'required' ? (
-                        <span className="text-red-600 font-normal text-sm">
-                            Listing Type is required
-                        </span>
-                    ) : null}
+                {/* New Development */}
+                <div className="col-span-12 sm:col-span-6 md:col-span-3">
+                    <Dropdown
+                        register={register}
+                        errors={errors}
+                        data={newDevelopment}
+                        setValue={setValue}
+                        name="New Development"
+                    />
                 </div>
-
-                <div className="col-span-6 sm:col-span-6">
+                {/* Listing Type */}
+                <div className="col-span-12 sm:col-span-6 md:col-span-3">
+                    <Dropdown
+                        register={register}
+                        errors={errors}
+                        data={listingType}
+                        setValue={setValue}
+                        name="Listing Type"
+                    />
+                </div>
+                {/* Property Type */}
+                <div className="col-span-12 sm:col-span-6 md:col-span-3">
+                    <Dropdown
+                        register={register}
+                        errors={errors}
+                        data={propertyType}
+                        setValue={setValue}
+                        name="Property Type"
+                    />
+                </div>
+                {/* Address */}
+                <div className="col-span-12 md:col-span-6">
                     <label
                         htmlFor="Address"
                         className="block text-sm font-medium text-gray-700"
                     >
                         Address{' '}
                         <span className="text-xs text-gray-500">
-                            (If the address is not available, please pin on the
-                            map)
+                            (Or pin on map)
                         </span>
                     </label>
                     <input
                         type="text"
                         value={stateaddress}
+                        onChange={(e) => setStateaddress(e.target.value)}
                         className={classNames(
                             errors['Address']?.type === 'required'
                                 ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
                                 : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                            'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
+                            'mt-1 block w-full shadow-sm sm:text-sm border-gray-200 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 hover:bg-yellow-50 hover:border-yellow-400'
                         )}
                         placeholder="Address"
                         ref={inputref}
@@ -155,338 +173,39 @@ export default function AddPropertyForm() {
                     ) : null}
                     <input
                         type="hidden"
-                        className="mt-1 focus:ring-yellow-400 focus:border-yellow-400 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50"
+                        className="mt-1 focus:ring-yellow-400 focus:border-yellow-400 block w-full shadow-sm sm:text-sm border-gray-200 rounded-sm bg-gray-50 hover:bg-yellow-50 hover:border-yellow-400"
                         placeholder="Address"
                         name="Address"
+                        defaultValue={stateaddress}
                         {...register('Address', { required: true })}
                     />
                 </div>
-
-                <div className="col-span-6 sm:col-span-3">
-                    <label
-                        htmlFor="address_latitude"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Address Latitude
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Address Latitude"
-                        className={classNames(
-                            errors['Address Latitude']?.type === 'required'
-                                ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                            'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                        )}
-                        {...register('Address Latitude', {
-                            required: true,
-                        })}
+                {/* Address Coordinates - Latitude */}
+                <div className="col-span-12 sm:col-span-6 md:col-span-3">
+                    <Input
+                        name="Address Latitude"
+                        htmlId="address_longitude"
+                        errors={errors}
+                        defaultValue={state.PropertyDetails.lat}
+                        register={register}
+                        type="number"
+                        required={true}
                     />
-                    {errors['Address Latitude']?.type === 'required' ? (
-                        <span className="text-red-600 font-normal text-sm">
-                            Latitude is required
-                        </span>
-                    ) : null}
                 </div>
-                <div className="col-span-6 sm:col-span-3">
-                    <label
-                        htmlFor="address_longitude"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Address Longitude
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Address Longitude"
-                        className={classNames(
-                            errors['Address Longitude']?.type === 'required'
-                                ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                            'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                        )}
-                        {...register('Address Longitude', { required: true })}
+                {/* Address Coordinates - Longitude */}
+                <div className="col-span-12 sm:col-span-6 md:col-span-3">
+                    <Input
+                        name="Address Longitude"
+                        htmlId="address_longitude"
+                        errors={errors}
+                        defaultValue={state.PropertyDetails.lng}
+                        register={register}
+                        type="number"
+                        required={true}
                     />
-                    {errors['Address Longitude']?.type === 'required' ? (
-                        <span className="text-red-600 font-normal text-sm">
-                            Longitude is required
-                        </span>
-                    ) : null}
                 </div>
-
-                <div className="col-span-6 sm:col-span-6  grid grid-cols-6 gap-6">
-                    <div className="col-span-6 sm:col-span-3">
-                        <label
-                            htmlFor="address_apartment"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Apartment / Suite
-                        </label>
-                        <input
-                            type="text"
-                            className="mt-1 focus:ring-yellow-400 focus:border-yellow-400 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50"
-                            placeholder="Apartment / Suite"
-                            {...register('Apartment / Suite', {})}
-                        />
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                        <label
-                            htmlFor="address_property_type"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Property Type
-                        </label>
-                        <select
-                            {...register('Property Type', {
-                                required: true,
-                            })}
-                            className={classNames(
-                                errors['Property Type']?.type === 'required'
-                                    ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                    : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                                'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                            )}
-                        >
-                            <option value="House">House</option>
-                            <option value=" Apartment"> Apartment</option>
-                            <option value=" Stand"> Stand</option>
-                            <option value=" Farm"> Farm</option>
-                        </select>
-                        {errors['Property Type']?.type === 'required' ? (
-                            <span className="text-red-600 font-normal text-sm">
-                                Property Type is required
-                            </span>
-                        ) : null}
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                        <label
-                            htmlFor="features_bedrooms"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Bedrooms
-                        </label>
-                        <input
-                            type="number"
-                            placeholder="Bedrooms"
-                            className={classNames(
-                                errors['Bedrooms']?.type === 'required'
-                                    ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                    : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                                'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                            )}
-                            {...register('Bedrooms', { required: true })}
-                        />
-                        {errors['Bedrooms']?.type === 'required' ? (
-                            <span className="text-red-600 font-normal text-sm">
-                                Bedrooms is required
-                            </span>
-                        ) : null}
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                        <label
-                            htmlFor="features_bathrooms"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Bathrooms
-                        </label>
-                        <input
-                            type="number"
-                            placeholder="Bathrooms"
-                            className={classNames(
-                                errors['Bathrooms']?.type === 'required'
-                                    ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                    : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                                'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                            )}
-                            {...register('Bathrooms', { required: true })}
-                        />
-                        {errors['Bathrooms']?.type === 'required' ? (
-                            <span className="text-red-600 font-normal text-sm">
-                                Bathrooms is required
-                            </span>
-                        ) : null}
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                        <label
-                            htmlFor="features_garage"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Garages
-                        </label>
-                        <input
-                            type="number"
-                            placeholder="Garages"
-                            className={classNames(
-                                errors['Garages']?.type === 'required'
-                                    ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                    : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                                'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                            )}
-                            {...register('Garages', { required: true })}
-                        />
-                        {errors['Garages']?.type === 'required' ? (
-                            <span className="text-red-600 font-normal text-sm">
-                                Specify whether the property has any garages
-                            </span>
-                        ) : null}
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                        <label
-                            htmlFor="features_pool"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Pool
-                        </label>
-                        <div className="flex">
-                            <input
-                                {...register('Pool', { required: true })}
-                                type="radio"
-                                value="Yes"
-                                className="focus:ring-yellow-400 h-4 w-4 text-yellow-400 border-gray-300"
-                            />
-                            <label
-                                htmlFor="push-nothing"
-                                className="ml-1 block text-sm font-medium text-gray-700 mr-6"
-                            >
-                                Yes
-                            </label>
-                            <input
-                                {...register('Pool', { required: true })}
-                                type="radio"
-                                value="No"
-                                className="focus:ring-yellow-400 h-4 w-4 text-yellow-400 border-gray-300"
-                            />
-                            <label
-                                htmlFor="push-nothing"
-                                className="ml-1 block text-sm font-medium text-gray-700 mr-6"
-                            >
-                                No
-                            </label>
-                        </div>
-                        {errors['Pool']?.type === 'required' ? (
-                            <span className="text-red-600 font-normal text-sm">
-                                Specify whether the property has a pool
-                            </span>
-                        ) : null}
-                    </div>
-                    <div className="col-span-2 sm:col-span-2">
-                        <label
-                            htmlFor="address_postal_code"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Plot Size
-                        </label>
-                        <input
-                            type="number"
-                            placeholder="sqm"
-                            className={classNames(
-                                errors['Plot Size (square meter)']?.type ===
-                                    'required'
-                                    ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                    : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                                'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                            )}
-                            {...register('Plot Size (square meter)', {
-                                required: true,
-                            })}
-                        />
-                        {errors['Plot Size (square meter)']?.type ===
-                        'required' ? (
-                            <span className="text-red-600 font-normal text-sm">
-                                Home Size is required
-                            </span>
-                        ) : null}
-                    </div>
-                    <div className="col-span-2 sm:col-span-2">
-                        <label
-                            htmlFor="address_postal_code"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Garage Size
-                        </label>
-                        <input
-                            type="number"
-                            className="mt-1 focus:ring-yellow-400 focus:border-yellow-400 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50"
-                            placeholder="sqm"
-                            {...register('Garage Size (square meter)', {})}
-                        />
-                    </div>
-                    <div className="col-span-2 sm:col-span-2">
-                        <label
-                            htmlFor="address_postal_code"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            House Size
-                        </label>
-                        <input
-                            type="number"
-                            className={classNames(
-                                errors['Home Size (square meter)']?.type ===
-                                    'required'
-                                    ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                    : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                                'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                            )}
-                            placeholder="sqm"
-                            {...register('Home Size (square meter)', {
-                                required: true,
-                            })}
-                        />
-                        {errors['Home Size (square meter)']?.type ===
-                        'required' ? (
-                            <span className="text-red-600 font-normal text-sm">
-                                Home Size is required
-                            </span>
-                        ) : null}
-                    </div>
-                    <div className="col-span-6">
-                        {' '}
-                        <label
-                            htmlFor="price"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Price (R)
-                        </label>
-                        <input
-                            type="number"
-                            placeholder="Price"
-                            className={classNames(
-                                errors['Price']?.type === 'required'
-                                    ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                    : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                                'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                            )}
-                            {...register('Price', { required: true })}
-                        />
-                        {errors['Price']?.type === 'required' ? (
-                            <span className="text-red-600 font-normal text-sm">
-                                Price is required
-                            </span>
-                        ) : null}
-                    </div>
-                    <div className="col-span-6 sm:col-span-6">
-                        <label
-                            htmlFor="Description"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Description
-                        </label>
-                        <textarea
-                            className={classNames(
-                                errors['Description']?.type === 'required'
-                                    ? 'border-red-600 ring-red-600 focus:ring-red-600 focus:border-red-600 border-1 '
-                                    : 'focus:ring-yellow-400 focus:border-yellow-400 ',
-                                'mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm bg-gray-50 focus:ring-yellow-400 focus:border-yellow-400 '
-                            )}
-                            {...register('Description', { required: true })}
-                        />
-                        {errors['Description']?.type === 'required' ? (
-                            <span className="text-red-600 font-normal text-sm">
-                                A description is required
-                            </span>
-                        ) : null}
-                    </div>
-                </div>
-                <div className="col-span-6 sm:col-span-6 ">
+                {/* Map */}
+                <div className="col-span-12 md:col-span-6 rounded-sm shadow-sm border-gray-200 border h-96 md:h-full">
                     <Map
                         price={watch('Price')}
                         marker={marker}
@@ -497,10 +216,168 @@ export default function AddPropertyForm() {
                         setStateaddress={setStateaddress}
                     />
                 </div>
+                {/* Features Section */}
+                <div className="col-span-12 md:col-span-6 grid grid-cols-6 gap-6 md:grid-cols-12">
+                    {/* Apartment Suite */}
+                    <div className="col-span-6 sm:col-span-6 md:col-span-12">
+                        <Input
+                            name="Apartment / Suite"
+                            htmlId="address_apartment"
+                            errors={errors}
+                            defaultValue={state.PropertyDetails.apt}
+                            register={register}
+                            type="text"
+                        />
+                    </div>
+                    {/* Bedrooms */}
+                    <div className="col-span-6 md:col-span-6">
+                        <Input
+                            name="Bedrooms"
+                            htmlId="features_bedrooms"
+                            errors={errors}
+                            defaultValue={state.PropertyDetails.beds}
+                            register={register}
+                            type="number"
+                        />
+                    </div>
+                    {/* Bathrooms */}
+                    <div className="col-span-6 md:col-span-6">
+                        <Input
+                            name="Bathrooms"
+                            htmlId="features_bathrooms"
+                            errors={errors}
+                            defaultValue={state.PropertyDetails.baths}
+                            register={register}
+                            type="number"
+                        />
+                    </div>
+                    {/* Garages */}
+                    <div className="col-span-6 md:col-span-6">
+                        <Input
+                            name="Garages"
+                            htmlId="features_garages"
+                            errors={errors}
+                            defaultValue={state.PropertyDetails.garages}
+                            register={register}
+                            type="number"
+                        />
+                    </div>
+                    <div className="col-span-6 md:col-span-6">
+                        <Input
+                            name="Year Built"
+                            errors={errors}
+                            htmlId="year_built"
+                            defaultValue={state.PropertyDetails.yearBuilt}
+                            register={register}
+                            type="number"
+                        />
+                    </div>
+                    {/* Features */}
+                    <div className="col-span-6 sm:col-span-6 md:col-span-12">
+                        <div className="grid grid-cols-6 lg:flex lg:justify-between lg:items-center flex-wrap">
+                            <div className="col-span-3">
+                                <Select
+                                    name="Pool"
+                                    register={register}
+                                    htmlId="pool"
+                                    defaultValue={state.PropertyDetails.pool}
+                                />
+                            </div>
+                            <div className="col-span-3">
+                                <Select
+                                    name="Pets"
+                                    register={register}
+                                    htmlId="pets"
+                                    defaultValue={state.PropertyDetails.pets}
+                                    className="col-span-3"
+                                />
+                            </div>
+                            <div className="col-span-3">
+                                <Select
+                                    name="Garden"
+                                    register={register}
+                                    htmlId="garden"
+                                    defaultValue={state.PropertyDetails.garden}
+                                />
+                            </div>
+                            <div className="col-span-3">
+                                <Select
+                                    name="Flatlet"
+                                    register={register}
+                                    htmlId="flatlet"
+                                    defaultValue={state.PropertyDetails.flatlet}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    {/* Plot Size */}
+                    <div className="col-span-6 lg:col-span-4">
+                        <Input
+                            name="Plot Size (sqm)"
+                            errors={errors}
+                            htmlId="plot_size"
+                            defaultValue={state.PropertyDetails.plotSize}
+                            register={register}
+                            type="number"
+                        />
+                    </div>
+                    {/* Garage Size */}
+                    <div className="col-span-6 lg:col-span-4">
+                        <Input
+                            name="Garage Size (sqm)"
+                            errors={errors}
+                            htmlId="garage_size"
+                            defaultValue={state.PropertyDetails.garageSize}
+                            register={register}
+                            type="number"
+                        />
+                    </div>
+                    {/* Floor Size */}
+                    <div className="col-span-6 lg:col-span-4">
+                        <Input
+                            name="Floor Size (sqm)"
+                            errors={errors}
+                            htmlId="floor_size"
+                            defaultValue={state.PropertyDetails.plotSize}
+                            register={register}
+                            type="number"
+                        />
+                    </div>
+                    {/* Price */}
+                    <div className="col-span-6">
+                        <Input
+                            name="Price"
+                            errors={errors}
+                            htmlId="price"
+                            defaultValue={state.PropertyDetails.price}
+                            register={register}
+                            type="number"
+                        />
+                    </div>
+                    {/* Description */}
+                    <div className="col-span-6 sm:col-span-6 md:col-span-12">
+                        <TextArea
+                            name="Description"
+                            register={register}
+                            htmlId="description"
+                            errors={errors}
+                            required={true}
+                            defaultValue={state.PropertyDetails.description}
+                        />
+                    </div>
+                </div>
             </div>
-            <div className="w-full h-16 flex items-center flex-row-reverse">
+            {/* Navigation Buttons */}
+            <div className="w-full h-16 flex items-center justify-between">
                 <button
-                    className="bg-yellow-100 p-1 pl-2 pr-2 rounded-md text-yellow-500 border-2 border-yellow-500"
+                    className="bg-gray-100 p-1 pl-2 pr-2 rounded-md text-gray-500 w-24"
+                    disabled
+                >
+                    Previous
+                </button>
+                <button
+                    className="bg-yellow-100 p-1 pl-2 pr-2 rounded-md text-yellow-500 w-24"
+                    // onClick={handleNext}
                     type="submit"
                 >
                     Next

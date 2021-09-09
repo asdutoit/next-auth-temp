@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession, getSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
 import DashboardNavigation from '../components/Navigation/DashboardNavigation';
 import AddProperty from '../components/Dashboard/AddNewProperty/AddProperty';
+import Profile from '../components/Dashboard/Profile/index';
+import Properties from '../components/Dashboard/Properties/index';
 
 /* This example requires Tailwind CSS v2.0+ */
 const people = [
@@ -370,30 +372,64 @@ const people = [
     // More people...
 ];
 
+const profile = [
+    { name: 'Profile', href: '/#', current: false },
+    {
+        name: 'Add New Property',
+        href: '/#',
+        current: false,
+    },
+    {
+        name: 'Properties',
+        href: '/#',
+        current: false,
+    },
+];
+
+const returnComponent = (navoption, props) => {
+    switch (navoption) {
+        case 'Profile':
+            return <Profile {...props} />;
+        case 'Add New Property':
+            return <AddProperty {...props} />;
+        case 'Properties':
+            return <Properties {...props} />;
+        default:
+            return null;
+    }
+};
+
 export default function Dashboard() {
     const router = useRouter();
     const [session, loading] = useSession();
+    const [navoption, setnavoption] = useState('Add New Property');
+    const [component, setComponent] = useState(<AddProperty />);
 
     if (loading) <h1>Loading....</h1>;
 
     if (session === null) {
         router.push('/auth/signin');
     }
-    console.log(session);
     const color = 'light';
 
+    useEffect(() => {
+        const componentToRender = returnComponent(navoption);
+        setComponent(componentToRender);
+    }, [navoption]);
+
     return session ? (
-        <div className=" bg-FAFA h-full ">
+        <div className=" bg-FAFA">
             <div className="h-14 flex justify-center bg-white">
                 <div className="flex max-w-screen-xl">
-                    <DashboardNavigation />
+                    <DashboardNavigation
+                        setnavoption={setnavoption}
+                        profile={profile}
+                        navoption={navoption}
+                    />
                 </div>
             </div>
 
-            {/* //TODO: Add a component to render the relevant dashboard */}
-            <div className="flex justify-center">
-                <AddProperty />
-            </div>
+            <div className="flex justify-center">{component}</div>
         </div>
     ) : null;
 }

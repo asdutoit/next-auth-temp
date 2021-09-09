@@ -20,6 +20,7 @@
     "fs": "^0.0.1-security",
     "google-map-react": "^2.1.10",
     "hash": "^0.2.1",
+    "little-state-machine": "^4.1.2",
     "mongodb": "^3.6.10",
     "next": "latest",
     "next-auth": "^3.27.3",
