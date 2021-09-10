@@ -148,7 +148,7 @@ export default memo(function Card({
         >
             <div
                 className={classNames(
-                    rounded ? 'rounded-lg h-245' : 'h-290',
+                    rounded ? 'rounded-lg h-245' : '',
                     'overflow-hidden'
                 )}
             >

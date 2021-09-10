@@ -234,12 +234,6 @@ export default function MapComponent2({
                                 className="overflow-visible"
                                 propertyId={cluster.properties.propertyId}
                                 isdragging={isdragging}
-                                // onClick={() => {
-                                //     mapRef.current.panTo({
-                                //         lat: latitude,
-                                //         lng: longitude,
-                                //     });
-                                // }}
                             >
                                 {/* MARKER */}
                                 <MapMarker
@@ -257,6 +251,7 @@ export default function MapComponent2({
                         lat={isHighlighted.lat}
                         lng={isHighlighted.lon}
                         text={isHighlighted.price}
+                        inCluster={true}
                         currency={'R'}
                     />
                 ) : null}

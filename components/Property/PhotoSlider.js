@@ -76,7 +76,7 @@ const settings = {
 function PhotoSlider({ photos, rounded = false, visible }) {
     return (
         <div>
-            <Image
+            {/* <Image
                 src={photos[0].href}
                 layout="responsive"
                 width="256"
@@ -86,8 +86,8 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                 priority="true"
                 // loading="eager"
                 className={`object-cover ${rounded ? 'rounded-lg' : ''}`}
-            />
-            {/* <Slider
+            /> */}
+            <Slider
                 {...settings}
                 nextArrow={<ChevronRight visible={visible} />}
                 prevArrow={<ChevronLeft visible={visible} />}
@@ -107,7 +107,7 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         }`}
                     />
                 ))}
-            </Slider> */}
+            </Slider>
         </div>
     );
 }

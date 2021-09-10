@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { faWindows } from '@fortawesome/free-brands-svg-icons';
 import { classNames } from '../../utils/general';
+import {
+    CheckIcon,
+    DotsHorizontalIcon,
+    PencilIcon,
+    RefreshIcon,
+    TrashIcon,
+} from '@heroicons/react/solid';
 
 function createMultiPolyon(array) {
     const multipoly = [];
@@ -83,6 +89,8 @@ function Drawing({
                 data: {
                     viewport,
                     list: true,
+                    limit: 20,
+                    skip: 0,
                 },
             });
             setMarkers(response.data.properties);
@@ -203,30 +211,50 @@ function Drawing({
     }
 
     return (
-        <div className="absolute z-10 p-4 flex top-12 right-0">
+        <div className="absolute z-10 p-4 flex top-1 right-0">
             {drawCount === 1 ? (
                 <button
                     onClick={handleClearDrawing}
-                    className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none   "
+                    className="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-white hover:bg-gray-200 shadow-md focus:outline-none   "
                 >
-                    Clear Boundry
+                    <div className="flex items-center">
+                        <span>
+                            <TrashIcon className="h-5 w-5 text-blue-500 mr-1" />{' '}
+                        </span>
+                        Clear Boundry
+                    </div>
                 </button>
             ) : (
                 <button
                     onClick={handleDraw}
                     disabled={loading}
                     className={classNames(
-                        loading
-                            ? 'bg-indigo-400'
-                            : 'bg-indigo-600 hover:bg-indigo-700',
-                        'py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none'
+                        loading ? 'bg-gray-200' : 'bg-white hover:bg-gray-200',
+                        'py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black shadow-md focus:outline-none'
                     )}
                 >
-                    {draw === false && loading === true
-                        ? 'Refreshing...'
-                        : draw === false && loading === false
-                        ? 'DRAW'
-                        : 'APPLY'}
+                    {draw === false && loading === true ? (
+                        <div className="flex items-center">
+                            <span>
+                                <RefreshIcon className="h-5 w-5 text-blue-500 mr-1" />{' '}
+                            </span>
+                            Refreshing
+                        </div>
+                    ) : draw === false && loading === false ? (
+                        <div className="flex items-center">
+                            <span>
+                                <PencilIcon className="h-5 w-5 text-blue-500 mr-1" />{' '}
+                            </span>
+                            DRAW
+                        </div>
+                    ) : (
+                        <div className="flex items-center">
+                            <span>
+                                <CheckIcon className="h-5 w-5 text-blue-500 mr-1" />{' '}
+                            </span>
+                            APPLY
+                        </div>
+                    )}
                 </button>
             )}
         </div>

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
-import { useSession, signOut, getSession } from 'next-auth/client';
+import { useSession, signOut } from 'next-auth/client';
 import { classNames } from '../../utils/general';
 import { navigationLeft, navigationRight } from '../../navigation/index';
 
