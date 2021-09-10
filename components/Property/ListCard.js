@@ -7,7 +7,7 @@ export default memo(function ListCard({
 }) {
     return (
         <div
-            className="relative transition duration-300 transform hover:scale-105 hover:shadow-md hover:border-2 hover:border-black "
+            className="relative transition duration-300 transform hover:scale-105 hover:shadow-md"
             // FIXME: --- The following functions may have an adverse affect on performance.  Optimize ---
             // UPDATE:  Wrapped the component in React.memo.   Made a considerable difference.
             onMouseEnter={() =>
