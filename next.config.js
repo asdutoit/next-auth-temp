@@ -5,6 +5,7 @@ const nextConfig = {
             'ar.rdcpix.com',
             'hips.hearstapps.com',
             'lh3.googleusercontent.com',
+            'res.cloudinary.com',
         ],
     },
 };

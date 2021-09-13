@@ -100,8 +100,7 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         height="232.5"
                         quality={25}
                         key={i}
-                        priority="true"
-                        // loading="eager"
+                        loading="eager"
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''
                         }`}
