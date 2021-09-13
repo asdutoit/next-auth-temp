@@ -136,7 +136,7 @@ export default function MapComponent2({
         points,
         bounds,
         zoom,
-        options: { radius: 45, maxZoom: 15 },
+        options: { radius: 75, maxZoom: 20 },
     });
 
     // Function to check if properties are inside or outside the cluster
