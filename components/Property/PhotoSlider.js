@@ -83,7 +83,7 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                 height="232.5"
                 quality={25}
                 // key={i}
-                priority="true"
+                priority={true}
                 // loading="eager"
                 className={`object-cover ${rounded ? 'rounded-lg' : ''}`}
             /> */}
@@ -100,7 +100,9 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         height="232.5"
                         quality={25}
                         key={i}
-                        // loading="eager"
+                        loading="lazy"
+                        lazyBoundary="50px"
+                        // priority="true"
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''
                         }`}
