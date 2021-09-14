@@ -60,7 +60,7 @@ const settings = {
     slidesToScroll: 1,
     // nextArrow: <ChevronRight />,
     // prevArrow: <ChevronLeft />,
-    // lazyLoad: false,
+    lazyLoad: 'anticipated',
     swipe: false,
     appendDots: (dots) => (
         <div
@@ -100,9 +100,9 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         height="232.5"
                         quality={25}
                         key={i}
-                        loading="lazy"
-                        lazyBoundary="50px"
-                        // priority="true"
+                        loading="eager"
+                        // lazyBoundary="50px"
+                        // priority={true}
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''
                         }`}

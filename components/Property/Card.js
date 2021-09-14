@@ -166,7 +166,7 @@ export default memo(function Card({
             ) : null}
             <div
                 className={classNames(
-                    rounded ? 'rounded-xl' : '',
+                    rounded ? 'rounded-lg' : '',
                     'text-white p-2 absolute bottom-0 w-full cursor-pointer marker-component-details'
                 )}
                 // Function to open the Details page for the property
