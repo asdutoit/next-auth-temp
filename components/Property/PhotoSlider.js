@@ -60,7 +60,7 @@ const settings = {
     slidesToScroll: 1,
     // nextArrow: <ChevronRight />,
     // prevArrow: <ChevronLeft />,
-    // lazyLoad: 'anticipated',
+    lazyLoad: 'ondemand',
     swipe: false,
     appendDots: (dots) => (
         <div
@@ -102,6 +102,8 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         key={i}
                         loading="lazy"
                         lazyBoundary="50px"
+                        placeholder="blur"
+                        blurDataURL={`/_next/image?url=${photo.href}&w=10&q=1`}
                         // priority={true}
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''
