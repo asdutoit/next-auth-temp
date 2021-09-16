@@ -73,35 +73,43 @@ const settings = {
     ),
 };
 
+const bunnyLoader = ({ src, width, quality }) => {
+    const updatedURL = src.replace('https://ar.rdcpix.com/', '');
+    return `https://rdcpix.b-cdn.net/${updatedURL}?width=${width}&quality=${
+        quality || 75
+    }`;
+};
+
 function PhotoSlider({ photos, rounded = false, visible }) {
     return (
         <div>
-            <Image
+            {/* <Image
+                loader={bunnyLoader}
                 src={photos[0].href}
                 layout="responsive"
-                width="256"
-                height="232.5"
+                width={20}
+                height={20}
                 quality={25}
                 // key={i}
-                priority={true}
+                // priority={true}
                 // loading="eager"
                 className={`object-cover ${rounded ? 'rounded-lg' : ''}`}
-            />
-            {/* <Slider
+            /> */}
+            <Slider
                 {...settings}
                 nextArrow={<ChevronRight visible={visible} />}
                 prevArrow={<ChevronLeft visible={visible} />}
             >
                 {photos.map((photo, i) => (
                     <Image
-                        src={photo.href}
+                        loader={bunnyLoader}
+                        src={photos[0].href}
                         layout="responsive"
-                        width="256"
-                        height="232.5"
+                        width={20}
+                        height={20}
                         quality={25}
-                        key={i}
-                        loading="lazy"
-                        lazyBoundary="50px"
+                        // loading="lazy"
+                        // lazyBoundary="50px"
                         // placeholder="blur"
                         // priority={true}
                         className={`object-cover ${
@@ -109,7 +117,7 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         }`}
                     />
                 ))}
-            </Slider> */}
+            </Slider>
         </div>
     );
 }
