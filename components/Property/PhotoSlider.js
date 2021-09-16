@@ -60,7 +60,7 @@ const settings = {
     slidesToScroll: 1,
     // nextArrow: <ChevronRight />,
     // prevArrow: <ChevronLeft />,
-    lazyLoad: 'ondemand',
+    lazyLoad: 'progressive',
     swipe: false,
     appendDots: (dots) => (
         <div
@@ -108,7 +108,8 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         width={20}
                         height={20}
                         quality={25}
-                        // loading="lazy"
+                        key={i}
+                        loading="lazy"
                         // lazyBoundary="50px"
                         // placeholder="blur"
                         // priority={true}

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useContext } from 'react';
+import Head from 'next/head';
 import ListComponent from '../components/List/ListComponent';
 import MapComponent2 from '../components/Map/MapComponent2';
 // import { connectToDatabase } from '../utils/mongodb';
@@ -65,53 +66,62 @@ export default function buy() {
     }, []);
 
     // if (isLoading) return 'Loading...';
-
+    console.count('counter');
     return (
-        <div className="flex h-full flex-row buy-rent ">
-            <div className="flex-grow h-full overflow-auto relative">
-                <MapComponent2
-                    setViewport={setViewport}
-                    isHighlighted={isHighlighted}
-                    mapRef={mapRef}
-                    mapsRef={mapsRef}
-                    polygonRef={polygonRef}
-                    setProperties={setProperties}
-                    draw={draw}
-                    setDraw={setDraw}
+        <>
+            <Head>
+                <title>Search for Properties</title>
+                <meta
+                    name="viewport"
+                    content="initial-scale=1.0, width=device-width"
                 />
-            </div>
-            {isBrowser ? (
-                // <div className="h-550 flex-grow-0 relative overflow-scroll overflow-y-hidden mdxl:overflow-auto mdxl:h-full flex-col flex-nowrap mdxl:w-700 bg-green-500">
-                <div className="flex-grow-0 w-350 relative h-full flex-col mdxl:w-700 overflow-auto">
-                    <div className="list__info bg-yellow-300 h-12">
-                        List Information
-                    </div>
-                    <div className="list__results__section ">
-                        <div className="list__results">
-                            {/* <div style={{ height: '100%' }}> */}
-                            {mapsRef.current && (
-                                <ListComponent
-                                    viewport={viewport}
-                                    setIsHighlighted={setIsHighlighted}
-                                    mapRef={mapRef}
-                                    properties={properties}
-                                    setProperties={setProperties}
-                                    setCount={setCount}
-                                    draw={draw}
-                                    limit={limit}
-                                    skip={skip}
-                                />
-                            )}
-                            {/* </div> */}
+            </Head>
+            <div className="flex h-full flex-row buy-rent ">
+                <div className="flex-grow h-full overflow-auto relative">
+                    <MapComponent2
+                        setViewport={setViewport}
+                        isHighlighted={isHighlighted}
+                        mapRef={mapRef}
+                        mapsRef={mapsRef}
+                        polygonRef={polygonRef}
+                        setProperties={setProperties}
+                        draw={draw}
+                        setDraw={setDraw}
+                    />
+                </div>
+                {isBrowser ? (
+                    // <div className="h-550 flex-grow-0 relative overflow-scroll overflow-y-hidden mdxl:overflow-auto mdxl:h-full flex-col flex-nowrap mdxl:w-700 bg-green-500">
+                    <div className="flex-grow-0 w-350 relative h-full flex-col mdxl:w-700 overflow-auto">
+                        <div className="list__info bg-yellow-300 h-12">
+                            List Information
                         </div>
-                        {/* <div className="list__pagination bg-red-500">
+                        <div className="list__results__section ">
+                            <div className="list__results">
+                                {/* <div style={{ height: '100%' }}> */}
+                                {mapsRef.current && (
+                                    <ListComponent
+                                        viewport={viewport}
+                                        setIsHighlighted={setIsHighlighted}
+                                        mapRef={mapRef}
+                                        properties={properties}
+                                        setProperties={setProperties}
+                                        setCount={setCount}
+                                        draw={draw}
+                                        limit={limit}
+                                        skip={skip}
+                                    />
+                                )}
+                                {/* </div> */}
+                            </div>
+                            {/* <div className="list__pagination bg-red-500">
                             Pagination
                         </div> */}
-                        <Pagination count={count} limit={limit} />
+                            <Pagination count={count} limit={limit} />
+                        </div>
                     </div>
-                </div>
-            ) : null}
-        </div>
+                ) : null}
+            </div>
+        </>
     );
 }
 
