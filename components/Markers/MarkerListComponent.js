@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useLayer, Arrow } from 'react-laag';
-// import Image from 'next/image';
-import Image from '../Image';
+import { useLayer } from 'react-laag';
+import Image from 'next/image';
 
 export default function MarkerListComponent({ data, isdragging, children }) {
     const [isOpen, setOpen] = useState(false);

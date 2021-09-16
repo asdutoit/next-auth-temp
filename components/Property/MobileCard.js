@@ -1,9 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { ExclamationIcon } from '@heroicons/react/outline';
-// import Image from 'next/image';
-import Image from '../Image';
+import Image from 'next/image';
 import { numFormatter } from '../../utils/numFormatter';
 
 export default function MobileCard({

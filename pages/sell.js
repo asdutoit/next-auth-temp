@@ -1,9 +1,6 @@
 import React from 'react';
-// import Image from 'next/image';
-import Image from '../components/Image';
 import { getProperties } from '../utils/queries';
-import { QueryClient, useQuery } from 'react-query';
-import { dehydrate } from 'react-query/hydration';
+import { useQuery } from 'react-query';
 
 export default function sell() {
     const { data, loading } = useQuery('properties', getProperties);

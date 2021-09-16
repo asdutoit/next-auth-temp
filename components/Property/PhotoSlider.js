@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Slider from 'react-slick';
 import Image from 'next/image';
-// import Image from '../Image';
 
 function ChevronRight(props) {
     const { className, style, onClick, visible } = props;

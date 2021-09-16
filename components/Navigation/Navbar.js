@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from 'react';
 import Link from 'next/link';
-// import Image from 'next/image';
 import Image from '../Image';
 import { useRouter } from 'next/router';
 import { Disclosure, Menu, Transition } from '@headlessui/react';

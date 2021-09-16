@@ -7,8 +7,6 @@ const nextConfig = {
             'lh3.googleusercontent.com',
             'res.cloudinary.com',
         ],
-        loader: 'imgix',
-        path: '',
     },
 };
 
