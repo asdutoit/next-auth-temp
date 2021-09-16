@@ -41,7 +41,6 @@ const getFavourites = async () => {
 };
 
 const getProperty = async (id) => {
-    console.log('calllededelde');
     const response = await axios.get(`/api/property/${id}`);
     return response.data;
 };

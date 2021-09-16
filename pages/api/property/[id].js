@@ -26,11 +26,11 @@ export default async function handle(req, res) {
         coordinates: 1,
     };
 
-    const properties = await db
+    const property = await db
         .collection('newyorksampleproperties2')
         .find(filter, { projection: projection })
         .sort({ metacritic: -1 })
         .toArray();
 
-    res.status(200).send({ properties });
+    res.status(200).send({ property });
 }

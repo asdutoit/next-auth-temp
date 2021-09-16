@@ -1,10 +1,10 @@
 import React, { useState, memo, useEffect, useContext } from 'react';
 import PhotoSlider from './PhotoSlider';
 import { numFormatter } from '../../utils/numFormatter';
-import axios from 'axios';
+import { getProperty } from '../../utils/queries';
 import { signIn, useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import { useQueryClient, useMutation } from 'react-query';
+import { useQueryClient, useMutation, useQuery } from 'react-query';
 import { classNames } from '../../utils/general';
 import { UserContext } from '../../context/Context';
 
@@ -35,8 +35,12 @@ export default memo(function MapCard({
     const [session, loading] = useSession();
     const [saving, setSaving] = useState(false);
     const queryClient = useQueryClient();
-    const [fetchingData, setFetchingData] = useState(true);
-    const [property, setProperty] = useState(undefined);
+    let price;
+
+    const { isLoading, isError, data, error } = useQuery(
+        ['getProperty', propertyId],
+        () => getProperty(propertyId)
+    );
 
     const mutation = useMutation(
         (propertyId) => axios.post(`/api/property/${propertyId}/fav`),
@@ -114,19 +118,19 @@ export default memo(function MapCard({
         checkLocalStorageForFav();
     }, [loading]);
 
-    useEffect(() => {
-        const fetchProperty = async (id) => {
-            try {
-                const response = await axios.get(`/api/property/${id}`);
-                setProperty(response.data.properties[0]);
-                setFetchingData(false);
-            } catch (error) {
-                console.log('Error in the MarkerComponent');
-            }
-        };
+    // useEffect(() => {
+    //     const fetchProperty = async (id) => {
+    //         try {
+    //             const response = await getProperty(id);
+    //             setProperty(response.properties[0]);
+    //             setFetchingData(false);
+    //         } catch (error) {
+    //             console.log('Error in the MarkerComponent');
+    //         }
+    //     };
 
-        fetchProperty(propertyId);
-    }, []);
+    //     fetchProperty(propertyId);
+    // }, []);
 
     const handleSetFav = async () => {
         try {
@@ -151,13 +155,15 @@ export default memo(function MapCard({
     const showOnMap = () => {
         mapRef.current.setZoom(15);
         mapRef.current.panTo({
-            lat: property.address.lat,
-            lng: property.address.lon,
+            lat: data.property[0].address.lat,
+            lng: data.property[0].address.lon,
         });
     };
 
-    if (fetchingData) return <div>Loading...</div>;
-    const price = numFormatter(property.community.price_max);
+    if (isLoading) return <div>Loading...</div>;
+    if (data && !error) {
+        price = numFormatter(data.property[0]?.community?.price_max);
+    }
 
     return (
         <div
@@ -171,7 +177,7 @@ export default memo(function MapCard({
                 )}
             >
                 <PhotoSlider
-                    photos={property.photos}
+                    photos={data.property[0].photos}
                     rounded={rounded}
                     visible={visible}
                 />
@@ -187,7 +193,7 @@ export default memo(function MapCard({
                     rounded ? 'rounded-lg' : '',
                     'text-white p-2 absolute bottom-0 w-full cursor-pointer marker-component-details'
                 )}
-                // Function to open the Details page for the property
+                // Function to open the Details page for the data.property[0]
                 onClick={() => {}}
             >
                 <div className="flex justify-between">
@@ -199,7 +205,7 @@ export default memo(function MapCard({
                             <div>
                                 <div style={{ textAlign: 'center' }}>
                                     <p>
-                                        <strong>{`${property.community.beds_max}`}</strong>
+                                        <strong>{`${data.property[0].community.beds_max}`}</strong>
                                     </p>
                                 </div>
                                 <div style={{ textAlign: 'center' }}>
@@ -220,7 +226,7 @@ export default memo(function MapCard({
                             <div>
                                 <div style={{ textAlign: 'center' }}>
                                     <p>
-                                        <strong>{`${property.community.baths_max}`}</strong>
+                                        <strong>{`${data.property[0].community.baths_max}`}</strong>
                                     </p>
                                 </div>
                                 <div style={{ textAlign: 'center' }}>
@@ -242,9 +248,11 @@ export default memo(function MapCard({
                                 <div style={{ textAlign: 'center' }}>
                                     <p>
                                         <strong>{`${
-                                            property.community.sqft_max === null
+                                            data.property[0].community
+                                                .sqft_max === null
                                                 ? 'N/A'
-                                                : property.community.sqft_max
+                                                : data.property[0].community
+                                                      .sqft_max
                                         }`}</strong>
                                     </p>
                                 </div>
@@ -258,7 +266,7 @@ export default memo(function MapCard({
                     </div>
                 </div>
 
-                <div className="text-white font-normal text-sm h-9">{`${property.address.line}, ${property.address.neighborhood_name}, ${property.address.city}, ${property.address.postal_code} `}</div>
+                <div className="text-white font-normal text-sm h-9">{`${data.property[0].address.line}, ${data.property[0].address.neighborhood_name}, ${data.property[0].address.city}, ${data.property[0].address.postal_code} `}</div>
             </div>{' '}
             <div className="absolute top-0 w-full  h-11 flex items-center justify-end">
                 <div
@@ -274,7 +282,8 @@ export default memo(function MapCard({
                             'rounded-full h-8 w-8  m-1 p-1'
                         )}
                         fill={
-                            favHover || state.favs.includes(property._id)
+                            favHover ||
+                            state.favs.includes(data.property[0]._id)
                                 ? 'red'
                                 : 'bg-black bg-opacity-10'
                         }
