@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession, signOut, getSession } from 'next-auth/client';
 import { classNames } from '../../utils/general';

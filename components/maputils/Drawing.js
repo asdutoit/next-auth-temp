@@ -3,7 +3,6 @@ import axios from 'axios';
 import { classNames } from '../../utils/general';
 import {
     CheckIcon,
-    DotsHorizontalIcon,
     PencilIcon,
     RefreshIcon,
     TrashIcon,
