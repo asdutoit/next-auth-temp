@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Slider from 'react-slick';
 import Image from 'next/image';
+// import Image from '../Image';
 
 function ChevronRight(props) {
     const { className, style, onClick, visible } = props;
@@ -102,8 +103,7 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         key={i}
                         loading="lazy"
                         lazyBoundary="50px"
-                        placeholder="blur"
-                        blurDataURL={`/_next/image?url=${photo.href}&w=10&q=1`}
+                        // placeholder="blur"
                         // priority={true}
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''

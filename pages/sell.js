@@ -1,5 +1,6 @@
 import React from 'react';
-import Image from 'next/image';
+// import Image from 'next/image';
+import Image from '../components/Image';
 import { getProperties } from '../utils/queries';
 import { QueryClient, useQuery } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
