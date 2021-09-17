@@ -116,7 +116,7 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                     href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
                 />
             </Head>
-            {/* <Image
+            <Image
                 loader={bunnyLoader}
                 src={photos[0].href}
                 layout="responsive"
@@ -127,8 +127,8 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                 // priority={true}
                 // loading="eager"
                 className={`object-cover ${rounded ? 'rounded-lg' : ''}`}
-            /> */}
-            <Slider
+            />
+            {/* <Slider
                 {...settings}
                 nextArrow={<ChevronRight visible={visible} />}
                 prevArrow={<ChevronLeft visible={visible} />}
@@ -152,7 +152,7 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         }`}
                     />
                 ))}
-            </Slider>
+            </Slider> */}
         </div>
     );
 }
