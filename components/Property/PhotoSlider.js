@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Slider from 'react-slick';
 import Image from 'next/image';
+import Head from 'next/head';
 
 function ChevronRight(props) {
     const { className, style, onClick, visible } = props;
@@ -80,9 +81,41 @@ const bunnyLoader = ({ src, width, quality }) => {
     }`;
 };
 
+const shimmer = (w, h) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#333" offset="20%" />
+      <stop stop-color="#222" offset="50%" />
+      <stop stop-color="#333" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#333" />
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+</svg>`;
+
+const toBase64 = (str) =>
+    typeof window === 'undefined'
+        ? Buffer.from(str).toString('base64')
+        : window.btoa(str);
+
 function PhotoSlider({ photos, rounded = false, visible }) {
     return (
         <div>
+            <Head>
+                <link
+                    rel="stylesheet"
+                    type="text/css"
+                    charSet="UTF-8"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+                />
+                <link
+                    rel="stylesheet"
+                    type="text/css"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+                />
+            </Head>
             {/* <Image
                 loader={bunnyLoader}
                 src={photos[0].href}
@@ -109,10 +142,11 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         height={20}
                         quality={25}
                         key={i}
-                        loading="lazy"
-                        // lazyBoundary="50px"
                         // placeholder="blur"
-                        // priority={true}
+                        // blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                        //     shimmer(20, 20)
+                        // )}`}
+                        loading="lazy"
                         className={`object-cover ${
                             rounded ? 'rounded-lg' : ''
                         }`}

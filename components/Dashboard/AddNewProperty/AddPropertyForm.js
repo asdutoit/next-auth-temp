@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { classNames } from '../../../utils/general';
 import Map from '../AddNewProperty/Map';
-import Geocode from 'react-geocode';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { useStateMachine } from 'little-state-machine';
 import { updateState } from './AddProperty';

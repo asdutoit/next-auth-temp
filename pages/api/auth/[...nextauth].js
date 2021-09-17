@@ -2,10 +2,6 @@ import NextAuth from 'next-auth';
 import { signIn } from 'next-auth/client';
 import Providers from 'next-auth/providers';
 import { connectToDatabase } from '../../../utils/mongodb';
-const bcrypt = require('bcrypt');
-const { ObjectId } = require('mongodb');
-
-const saltRounds = 10;
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options

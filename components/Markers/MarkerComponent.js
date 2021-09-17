@@ -26,7 +26,7 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
     //     }
     // }, [isOpen, mobileIsOpen]);
 
-    const { triggerProps, layerProps, arrowProps, renderLayer } = useLayer({
+    const { triggerProps, layerProps, renderLayer } = useLayer({
         isOpen,
         auto: true,
         overflowContainer: false,
@@ -61,7 +61,6 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
                             >
                                 <MapCard
                                     rounded="true"
-                                    onMap="true"
                                     propertyId={propertyId}
                                 />
                             </div>

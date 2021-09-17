@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 import { classNames } from '../../utils/general';
 import { UserContext } from '../../context/Context';
+import { updateFavourite } from '../../utils/mutations';
 
 const updater = async (propertyId) => {
     // Updates the user object
@@ -27,7 +28,7 @@ export default memo(function MapCard({
     onMap = false,
     propertyId,
 }) {
-    const { state, dispatch } = useContext(UserContext);
+    const { state } = useContext(UserContext);
     const [favHover, setFavHover] = useState(false);
     const [shareHover, setShareHover] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -42,59 +43,52 @@ export default memo(function MapCard({
         () => getProperty(propertyId)
     );
 
-    const mutation = useMutation(
-        (propertyId) => axios.post(`/api/property/${propertyId}/fav`),
-        {
-            onMutate: async (propertyId) => {
-                setSaving(true);
-                await queryClient.cancelQueries('favourites');
+    const mutation = useMutation((propertyId) => updateFavourite(propertyId), {
+        onMutate: async (propertyId) => {
+            setSaving(true);
+            await queryClient.cancelQueries('favourites');
 
-                const previousFavourites =
-                    queryClient.getQueryData('favourites');
-                const newval = previousFavourites.favourites.filter(
-                    (value) => value !== propertyId.toString()
-                );
+            const previousFavourites = queryClient.getQueryData('favourites');
+            const newval = previousFavourites.favourites.filter(
+                (value) => value !== propertyId.toString()
+            );
 
-                if (
-                    JSON.stringify(previousFavourites.favourites) !==
-                    JSON.stringify(newval)
-                ) {
-                    // Remove from the favourites array
-                    queryClient.setQueryData('favourites', (old) => ({
-                        ...old,
-                        favourites: [...newval],
-                    }));
-                } else {
-                    // Add to the favourites array
-                    queryClient.setQueryData('favourites', (old) => ({
-                        ...old,
-                        favourites: [...old.favourites, propertyId],
-                    }));
-                }
+            if (
+                JSON.stringify(previousFavourites.favourites) !==
+                JSON.stringify(newval)
+            ) {
+                // Remove from the favourites array
+                queryClient.setQueryData('favourites', (old) => ({
+                    ...old,
+                    favourites: [...newval],
+                }));
+            } else {
+                // Add to the favourites array
+                queryClient.setQueryData('favourites', (old) => ({
+                    ...old,
+                    favourites: [...old.favourites, propertyId],
+                }));
+            }
 
-                return { previousFavourites };
-            },
+            return { previousFavourites };
+        },
 
-            onError: (err, variables, context) => {
-                queryClient.setQueryData(
-                    'favourites',
-                    context.previousFavourites
-                );
-            },
+        onError: (err, variables, context) => {
+            queryClient.setQueryData('favourites', context.previousFavourites);
+        },
 
-            onSettled: (o) => {
-                queryClient.invalidateQueries('favourites');
-                localStorage.removeItem('tempFav');
-                setSaving(false);
-                // Below function is not necessarily needed, as the query update from /buy buy automatically fire and update context
-                // console.log('o', o.data.favouriteProperties);
-                // dispatch({
-                //     type: 'FAV_UPDATE',
-                //     payload: o.data.favouriteProperties,
-                // });
-            },
-        }
-    );
+        onSettled: (o) => {
+            queryClient.invalidateQueries('favourites');
+            localStorage.removeItem('tempFav');
+            setSaving(false);
+            // Below function is not necessarily needed, as the query update from /buy buy automatically fire and update context
+            // console.log('o', o.data.favouriteProperties);
+            // dispatch({
+            //     type: 'FAV_UPDATE',
+            //     payload: o.data.favouriteProperties,
+            // });
+        },
+    });
 
     // ============== HANDLE TOGGLE PROPERTY TO FAVOURITE OR NOT ==================
     //
@@ -118,30 +112,16 @@ export default memo(function MapCard({
         checkLocalStorageForFav();
     }, [loading]);
 
-    // useEffect(() => {
-    //     const fetchProperty = async (id) => {
-    //         try {
-    //             const response = await getProperty(id);
-    //             setProperty(response.properties[0]);
-    //             setFetchingData(false);
-    //         } catch (error) {
-    //             console.log('Error in the MarkerComponent');
-    //         }
-    //     };
-
-    //     fetchProperty(propertyId);
-    // }, []);
-
     const handleSetFav = async () => {
         try {
             // 1.   Check if user is logged in.  If not, redirect to signin page
             if (session) {
                 // 2.   Toggle the property as favourite or un-favourite - DONE ON BACKEND
                 setSaving(true);
-                mutation.mutate(property._id);
+                mutation.mutate(propertyId);
             } else {
                 // Set the favourite item in localstorage temporarily until user logged in.  See /buy page
-                localStorage.setItem('tempFav', property._id);
+                localStorage.setItem('tempFav', propertyId);
                 signIn('google', {
                     callbackUrl:
                         process.env.NEXT_PUBLIC_NEXTAUTH_URL + router.pathname,
@@ -150,14 +130,6 @@ export default memo(function MapCard({
         } catch (error) {
             console.log('error', error);
         }
-    };
-
-    const showOnMap = () => {
-        mapRef.current.setZoom(15);
-        mapRef.current.panTo({
-            lat: data.property[0].address.lat,
-            lng: data.property[0].address.lon,
-        });
     };
 
     if (isLoading) return <div>Loading...</div>;
@@ -182,15 +154,10 @@ export default memo(function MapCard({
                     visible={visible}
                 />
             </div>
-            {!onMap ? (
-                <div
-                    className=" absolute top-11 h-150 w-250 ml-9 mr-10 z-50"
-                    onClick={showOnMap}
-                ></div>
-            ) : null}
+            {/* Property Summary Details */}
             <div
                 className={classNames(
-                    rounded ? 'rounded-lg' : '',
+                    rounded ? 'rounded-b-lg' : '',
                     'text-white p-2 absolute bottom-0 w-full cursor-pointer marker-component-details'
                 )}
                 // Function to open the Details page for the data.property[0]
@@ -269,6 +236,7 @@ export default memo(function MapCard({
                 <div className="text-white font-normal text-sm h-9">{`${data.property[0].address.line}, ${data.property[0].address.neighborhood_name}, ${data.property[0].address.city}, ${data.property[0].address.postal_code} `}</div>
             </div>{' '}
             <div className="absolute top-0 w-full  h-11 flex items-center justify-end">
+                {/* Favourite Component */}
                 <div
                     className="pr-4 hover:cursor-pointer "
                     onMouseEnter={() => setFavHover(true)}
@@ -298,6 +266,7 @@ export default memo(function MapCard({
                         />
                     </svg>
                 </div>
+                {/* Share Component */}
                 <div
                     className="pr-4 hover:cursor-pointer "
                     onMouseEnter={() => setShareHover(true)}

@@ -10,4 +10,7 @@ const nextConfig = {
     },
 };
 
+// module.exports = withPlaiceholder({
+//     nextConfig,
+// });
 module.exports = nextConfig;

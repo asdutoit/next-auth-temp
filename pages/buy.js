@@ -5,11 +5,10 @@ import MapComponent2 from '../components/Map/MapComponent2';
 // import { connectToDatabase } from '../utils/mongodb';
 import { isBrowser } from 'react-device-detect';
 // import { ObjectId } from 'mongodb';
-import { getsession, useSession } from 'next-auth/client';
 import { QueryClient, useQuery } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
 import { UserContext } from '../context/Context';
-import { getProperties, getFavourites } from '../utils/queries';
+import { getFavourites } from '../utils/queries';
 import Pagination from '../components/List/Pagination';
 
 const defaultProperty = {
@@ -20,7 +19,7 @@ const defaultProperty = {
 };
 
 export default function buy() {
-    const { state, dispatch } = useContext(UserContext);
+    const { dispatch } = useContext(UserContext);
     const mapRef = useRef();
     const mapsRef = useRef();
     const polygonRef = useRef();
@@ -113,9 +112,7 @@ export default function buy() {
                                 )}
                                 {/* </div> */}
                             </div>
-                            {/* <div className="list__pagination bg-red-500">
-                            Pagination
-                        </div> */}
+
                             <Pagination count={count} limit={limit} />
                         </div>
                     </div>
