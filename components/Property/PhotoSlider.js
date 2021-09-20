@@ -74,31 +74,16 @@ const settings = {
     ),
 };
 
-const bunnyLoader = ({ src, width, quality }) => {
+const bunnyLoader = (props) => {
+    const { src, quality } = props;
+    const width = 500;
+    // console.log('width: ', width, 'quality: ', quality);
+    // console.log('props', props);
     const updatedURL = src.replace('https://ar.rdcpix.com/', '');
     return `https://rdcpix.b-cdn.net/${updatedURL}?width=${width}&quality=${
         quality || 75
     }`;
 };
-
-const shimmer = (w, h) => `
-<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <linearGradient id="g">
-      <stop stop-color="#333" offset="20%" />
-      <stop stop-color="#222" offset="50%" />
-      <stop stop-color="#333" offset="70%" />
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="#333" />
-  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
-</svg>`;
-
-const toBase64 = (str) =>
-    typeof window === 'undefined'
-        ? Buffer.from(str).toString('base64')
-        : window.btoa(str);
 
 function PhotoSlider({ photos, rounded = false, visible }) {
     return (
@@ -116,19 +101,19 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                     href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
                 />
             </Head>
-            <Image
+            {/* <Image
                 loader={bunnyLoader}
                 src={photos[0].href}
                 layout="responsive"
-                width={20}
-                height={20}
-                quality={25}
+                width={500}
+                height={500}
+                quality={75}
                 // key={i}
                 // priority={true}
                 // loading="eager"
                 className={`object-cover ${rounded ? 'rounded-lg' : ''}`}
-            />
-            {/* <Slider
+            /> */}
+            <Slider
                 {...settings}
                 nextArrow={<ChevronRight visible={visible} />}
                 prevArrow={<ChevronLeft visible={visible} />}
@@ -138,9 +123,9 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         loader={bunnyLoader}
                         src={photos[0].href}
                         layout="responsive"
-                        width={20}
-                        height={20}
-                        quality={25}
+                        width={200}
+                        height={200}
+                        quality={75}
                         key={i}
                         // placeholder="blur"
                         // blurDataURL={`data:image/svg+xml;base64,${toBase64(
@@ -152,9 +137,28 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         }`}
                     />
                 ))}
-            </Slider> */}
+            </Slider>
         </div>
     );
 }
 
 export default PhotoSlider;
+
+// const shimmer = (w, h) => `
+// <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+//   <defs>
+//     <linearGradient id="g">
+//       <stop stop-color="#333" offset="20%" />
+//       <stop stop-color="#222" offset="50%" />
+//       <stop stop-color="#333" offset="70%" />
+//     </linearGradient>
+//   </defs>
+//   <rect width="${w}" height="${h}" fill="#333" />
+//   <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+//   <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+// </svg>`;
+
+// const toBase64 = (str) =>
+//     typeof window === 'undefined'
+//         ? Buffer.from(str).toString('base64')
+//         : window.btoa(str);
