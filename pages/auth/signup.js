@@ -282,16 +282,7 @@ export default function Register({ providers, csrfToken }) {
     );
 }
 
-// export async function getServerSideProps(context) {
-//   return {
-//     props: {
-//       session: await getSession(context),
-//     },
-//   };
-// }
-
-// export async function getServerSideProps(context) {
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
     const { req, res } = context;
     const session = await getSession({ req });
 
