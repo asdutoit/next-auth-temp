@@ -127,7 +127,6 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                         height={200}
                         quality={75}
                         key={i}
-                        // placeholder="blur"
                         // blurDataURL={`data:image/svg+xml;base64,${toBase64(
                         //     shimmer(20, 20)
                         // )}`}
