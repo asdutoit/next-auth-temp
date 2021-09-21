@@ -85,6 +85,8 @@ const bunnyLoader = (props) => {
     }`;
 };
 
+//test message
+
 function PhotoSlider({ photos, rounded = false, visible }) {
     return (
         <div>
