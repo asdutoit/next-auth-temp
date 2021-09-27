@@ -164,12 +164,13 @@ export default memo(function Card({
                     visible={visible}
                 />
             </div>
-            {!onMap ? (
+            {/* OPTIONAL FUNCTION TO ZOOM USER IN ON MARKER LOCATION ON THE MAP */}
+            {/* {!onMap ? (
                 <div
                     className=" absolute top-11 h-150 w-250 ml-9 mr-10 z-50"
                     onClick={showOnMap}
                 ></div>
-            ) : null}
+            ) : null} */}
             <div
                 className={classNames(
                     rounded ? 'rounded-lg' : '',

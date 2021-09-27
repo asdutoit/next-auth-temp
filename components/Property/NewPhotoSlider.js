@@ -55,7 +55,7 @@ function NewPhotoSlider({ photos, rounded = false, visible }) {
                     loadPrevNextAmount: 1,
                     loadOnTransitionStart: true,
                 }}
-                navigation={true}
+                navigation={visible}
                 className="mySwiper h-full z-0"
                 loadOnTransitionStart={true}
                 loop={true}
