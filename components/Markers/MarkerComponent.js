@@ -48,20 +48,21 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
                     >
                         {childrenWithProps}
                     </div>
-                    {isOpen &&
-                        renderLayer(
-                            <div
-                                className="w-270 h-245 bg-white shadow-3xl rounded-lg relative flex flex-col"
-                                {...layerProps}
-                            >
-                                <MapCard
-                                    rounded="true"
-                                    propertyId={propertyId}
-                                    data={data}
-                                    error={error}
-                                />
-                            </div>
-                        )}
+                    {isOpen && !isLoading
+                        ? renderLayer(
+                              <div
+                                  className="w-270 h-245 bg-white shadow-3xl rounded-lg relative flex flex-col"
+                                  {...layerProps}
+                              >
+                                  <MapCard
+                                      rounded="true"
+                                      propertyId={propertyId}
+                                      data={data}
+                                      error={error}
+                                  />
+                              </div>
+                          )
+                        : null}
                 </>
             ) : (
                 <>
