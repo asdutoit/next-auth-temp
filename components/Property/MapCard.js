@@ -1,7 +1,6 @@
 import React, { useState, memo, useEffect, useContext } from 'react';
-import PhotoSlider from './PhotoSlider';
+// import PhotoSlider from './PhotoSlider';
 import { numFormatter } from '../../utils/numFormatter';
-import { getProperty } from '../../utils/queries';
 import { signIn, useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
@@ -28,6 +27,8 @@ export default memo(function MapCard({
     rounded,
     onMap = false,
     propertyId,
+    data,
+    error,
 }) {
     const { state } = useContext(UserContext);
     const [favHover, setFavHover] = useState(false);
@@ -39,10 +40,10 @@ export default memo(function MapCard({
     const queryClient = useQueryClient();
     let price;
 
-    const { isLoading, isError, data, error } = useQuery(
-        ['getProperty', propertyId],
-        () => getProperty(propertyId)
-    );
+    // const { isLoading, isError, data, error } = useQuery(
+    //     ['getProperty', propertyId],
+    //     () => getProperty(propertyId)
+    // );
 
     const mutation = useMutation((propertyId) => updateFavourite(propertyId), {
         onMutate: async (propertyId) => {
@@ -133,7 +134,7 @@ export default memo(function MapCard({
         }
     };
 
-    if (isLoading) return <div>Loading...</div>;
+    // if (isLoading) return null;
     if (data && !error) {
         price = numFormatter(data.property[0]?.community?.price_max);
     }

@@ -53,11 +53,10 @@ function NewPhotoSlider({ photos, rounded = false, visible }) {
                 lazy={{
                     loadPrevNext: true,
                     loadPrevNextAmount: 1,
-                    loadOnTransitionStart: true,
+                    // loadOnTransitionStart: true,
                 }}
                 navigation={visible}
                 className="mySwiper h-full z-0"
-                loadOnTransitionStart={true}
                 loop={true}
             >
                 {photos.map((photo, i) => (

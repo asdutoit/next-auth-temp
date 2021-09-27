@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }) {
                     </UserContext.Provider>
                 </AuthProvider>
             </Hydrate>
-            {/* <ReactQueryDevtools /> */}
+            <ReactQueryDevtools />
         </QueryClientProvider>
     );
 }

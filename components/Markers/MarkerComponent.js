@@ -3,11 +3,19 @@ import { useLayer, Arrow } from 'react-laag';
 import MapCard from '../Property/MapCard';
 import { isBrowser } from 'react-device-detect';
 import MobileCard from '../Property/MobileCard';
+import { useQuery } from 'react-query';
+import { getProperty } from '../../utils/queries';
 
 export default function MarkerComponent({ propertyId, isdragging, children }) {
     const [isOpen, setOpen] = useState(false);
     const [mobileIsOpen, setMobileIsOpen] = useState(false);
     const [property, setProperty] = useState(undefined);
+
+    const { isLoading, isError, data, error, refetch } = useQuery(
+        ['getProperty', propertyId],
+        () => getProperty(propertyId),
+        { enabled: false }
+    );
 
     const { triggerProps, layerProps, renderLayer } = useLayer({
         isOpen,
@@ -33,7 +41,11 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
         <>
             {isBrowser ? (
                 <>
-                    <div {...triggerProps} onClick={() => setOpen(!isOpen)}>
+                    <div
+                        {...triggerProps}
+                        onClick={() => setOpen(!isOpen)}
+                        onMouseEnter={() => refetch()}
+                    >
                         {childrenWithProps}
                     </div>
                     {isOpen &&
@@ -45,6 +57,8 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
                                 <MapCard
                                     rounded="true"
                                     propertyId={propertyId}
+                                    data={data}
+                                    error={error}
                                 />
                             </div>
                         )}
