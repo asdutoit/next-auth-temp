@@ -50,7 +50,7 @@ export default function ListComponent({
                                 property={property}
                                 setIsHighlighted={setIsHighlighted}
                                 mapRef={mapRef}
-                                className="w-full h-full"
+                                // className="w-full h-full"
                             >
                                 <Card property={property} mapRef={mapRef} />
                             </ListCard>

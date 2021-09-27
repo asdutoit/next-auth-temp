@@ -8,6 +8,7 @@ import { useQueryClient, useMutation, useQuery } from 'react-query';
 import { classNames } from '../../utils/general';
 import { UserContext } from '../../context/Context';
 import { updateFavourite } from '../../utils/mutations';
+import NewPhotoSlider from './NewPhotoSlider';
 
 const updater = async (propertyId) => {
     // Updates the user object
@@ -148,7 +149,12 @@ export default memo(function MapCard({
                     'overflow-hidden'
                 )}
             >
-                <PhotoSlider
+                {/* <PhotoSlider
+                    photos={data.property[0].photos}
+                    rounded={rounded}
+                    visible={visible}
+                /> */}
+                <NewPhotoSlider
                     photos={data.property[0].photos}
                     rounded={rounded}
                     visible={visible}
@@ -158,7 +164,7 @@ export default memo(function MapCard({
             <div
                 className={classNames(
                     rounded ? 'rounded-b-lg' : '',
-                    'text-white p-2 absolute bottom-0 w-full cursor-pointer marker-component-details'
+                    'text-white p-2 absolute bottom-0 w-full cursor-pointer marker-component-details z-10'
                 )}
                 // Function to open the Details page for the data.property[0]
                 onClick={() => {}}
@@ -235,7 +241,7 @@ export default memo(function MapCard({
 
                 <div className="text-white font-normal text-sm h-9">{`${data.property[0].address.line}, ${data.property[0].address.neighborhood_name}, ${data.property[0].address.city}, ${data.property[0].address.postal_code} `}</div>
             </div>{' '}
-            <div className="absolute top-0 w-full  h-11 flex items-center justify-end">
+            <div className="absolute top-0 w-full  h-11 flex items-center justify-end z-10">
                 {/* Favourite Component */}
                 <div
                     className="pr-4 hover:cursor-pointer "

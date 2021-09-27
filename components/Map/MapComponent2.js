@@ -136,7 +136,7 @@ export default function MapComponent2({
         points,
         bounds,
         zoom,
-        options: { radius: 75, maxZoom: 20 },
+        options: { radius: 35, maxZoom: 20 },
     });
 
     // Function to check if properties are inside or outside the cluster
@@ -246,7 +246,7 @@ export default function MapComponent2({
                         );
                     }
                 })}
-                
+
                 {/* The code below display the MapMarker when hovering on a List Card.   This is while the marker is still part of the cluster */}
                 {isHighlighted._id !== '' && checkIfInCluster(isHighlighted) ? (
                     <MapMarker

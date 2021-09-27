@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { useQueryClient, useMutation } from 'react-query';
 import { classNames } from '../../utils/general';
 import { UserContext } from '../../context/Context';
+import NewPhotoSlider from './NewPhotoSlider';
 
 const updater = async (propertyId) => {
     // Updates the user object
@@ -134,7 +135,7 @@ export default memo(function Card({
     };
 
     const showOnMap = () => {
-        mapRef.current.setZoom(15);
+        mapRef.current.setZoom(20);
         mapRef.current.panTo({
             lat: property.address.lat,
             lng: property.address.lon,
@@ -148,11 +149,16 @@ export default memo(function Card({
         >
             <div
                 className={classNames(
-                    rounded ? 'rounded-lg h-245' : '',
+                    rounded ? 'rounded-lg h-245' : 'w-full h-64',
                     'overflow-hidden'
                 )}
             >
-                <PhotoSlider
+                {/* <PhotoSlider
+                    photos={property.photos}
+                    rounded={rounded}
+                    visible={visible}
+                /> */}
+                <NewPhotoSlider
                     photos={property.photos}
                     rounded={rounded}
                     visible={visible}
@@ -167,7 +173,7 @@ export default memo(function Card({
             <div
                 className={classNames(
                     rounded ? 'rounded-lg' : '',
-                    'text-white p-2 absolute bottom-0 w-full cursor-pointer marker-component-details'
+                    'text-white p-2 absolute bottom-0 w-full cursor-pointer marker-component-details z-10'
                 )}
                 // Function to open the Details page for the property
                 onClick={() => {}}
@@ -242,7 +248,7 @@ export default memo(function Card({
 
                 <div className="text-white font-normal text-sm h-9">{`${property.address.line}, ${property.address.neighborhood_name}, ${property.address.city}, ${property.address.postal_code} `}</div>
             </div>{' '}
-            <div className="absolute top-0 w-full  h-11 flex items-center justify-end">
+            <div className="absolute top-0 w-full h-11 flex items-center justify-end z-10">
                 <div
                     className="pr-4 hover:cursor-pointer "
                     onMouseEnter={() => setFavHover(true)}

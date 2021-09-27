@@ -72,6 +72,15 @@ body {
     border-color: gray;
     z-index: 3;
 }
+.slick-slider,
+.slick-list,
+.slick-track {
+    height: 100%;
+}
+
+.slick-slide img {
+    height: 260px;
+}
 
 .map-price-marker:hover:after {
     border-color: #f2f2f2 transparent transparent;

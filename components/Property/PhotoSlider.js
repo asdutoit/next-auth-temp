@@ -63,6 +63,7 @@ const settings = {
     // prevArrow: <ChevronLeft />,
     lazyLoad: 'ondemand',
     swipe: false,
+    // className: 'h-64 object-cover',
     appendDots: (dots) => (
         <div
             style={{
@@ -74,22 +75,31 @@ const settings = {
     ),
 };
 
+const CustomImage = (props) => {
+    const { src, alt, width, height, loader, quality } = props;
+    const updatedSrc = loader({ src, quality, width, height });
+    return (
+        <img
+            src={updatedSrc}
+            alt={alt}
+            className="object-cover h-full w-full"
+        />
+    );
+};
+
 const bunnyLoader = (props) => {
-    const { src, quality } = props;
-    const width = 500;
-    // console.log('width: ', width, 'quality: ', quality);
-    // console.log('props', props);
+    const { src, quality = 100, width = 400, height, sharpen = true } = props;
     const updatedURL = src.replace('https://ar.rdcpix.com/', '');
-    return `https://rdcpix.b-cdn.net/${updatedURL}?width=${width}&quality=${
+    return `https://rdcpix.b-cdn.net/${updatedURL}?quality=${
         quality || 75
-    }`;
+    }&width=${width}&sharpen=${sharpen}`;
 };
 
 //test message
 
 function PhotoSlider({ photos, rounded = false, visible }) {
     return (
-        <div>
+        <>
             <Head>
                 <link
                     rel="stylesheet"
@@ -103,40 +113,24 @@ function PhotoSlider({ photos, rounded = false, visible }) {
                     href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
                 />
             </Head>
-            {/* <Image
-                loader={bunnyLoader}
-                src={photos[0].href}
-                layout="responsive"
-                width={500}
-                height={500}
-                quality={75}
-                // key={i}
-                // priority={true}
-                // loading="eager"
-                className={`object-cover ${rounded ? 'rounded-lg' : ''}`}
-            /> */}
             <Slider
                 {...settings}
                 nextArrow={<ChevronRight visible={visible} />}
                 prevArrow={<ChevronLeft visible={visible} />}
             >
                 {photos.map((photo, i) => (
-                    <Image
+                    <CustomImage
                         loader={bunnyLoader}
-                        src={photos[0].href}
-                        layout="responsive"
-                        width={200}
-                        height={200}
-                        quality={75}
+                        src={photo.href}
+                        alt="test"
+                        width={400}
+                        height={256}
+                        quality={100}
                         key={i}
-                        loading="lazy"
-                        className={`object-cover ${
-                            rounded ? 'rounded-lg' : ''
-                        }`}
                     />
                 ))}
             </Slider>
-        </div>
+        </>
     );
 }
 

@@ -16,16 +16,23 @@ const MapMarker = ({
         <div
             className={classNames(
                 conditionalClass === clusterId || inCluster
-                    ? 'transform -translate-y-1 scale-110 z-50 bg-green-400'
+                    ? 'transform -translate-y-1 scale-110 z-50 bg-gray-800'
                     : isOpen
-                    ? '-translate-y-1 scale-110 bg-purple-400'
-                    : 'bg-white z-0',
-                'map-price-marker absolute flex items-center justify-center rounded cursor-pointer shadow-lg  transition duration-100 ease-in-out transform hover:-translate-y-1 hover:scale-110'
+                    ? '-translate-y-1 scale-110 bg-gray-800 hover:bg-gray-800'
+                    : 'bg-white z-0 ',
+                'map-price-marker absolute flex items-center justify-center rounded cursor-pointer shadow-lg transition duration-100 ease-in-out transform hover:-translate-y-1 hover:scale-110'
             )}
         >
-            <span className="font-bold text-black text-tiny">{`${
-                currency ? currency : ''
-            } ${price}`}</span>
+            <span
+                className={classNames(
+                    conditionalClass === clusterId || inCluster
+                        ? 'text-white'
+                        : isOpen
+                        ? 'text-white'
+                        : 'text-black',
+                    'font-bold text-tiny'
+                )}
+            >{`${currency ? currency : ''} ${price}`}</span>
         </div>
     );
 };
