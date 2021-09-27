@@ -21,7 +21,6 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
         isOpen,
         auto: true,
         overflowContainer: false,
-        isOpen,
         triggerOffset: 40,
         containerOffset: 0,
         arrowOffset: 6,
@@ -48,21 +47,22 @@ export default function MarkerComponent({ propertyId, isdragging, children }) {
                     >
                         {childrenWithProps}
                     </div>
-                    {isOpen && !isLoading
-                        ? renderLayer(
-                              <div
-                                  className="w-270 h-245 bg-white shadow-3xl rounded-lg relative flex flex-col"
-                                  {...layerProps}
-                              >
-                                  <MapCard
-                                      rounded="true"
-                                      propertyId={propertyId}
-                                      data={data}
-                                      error={error}
-                                  />
-                              </div>
-                          )
-                        : null}
+                    {isOpen &&
+                        renderLayer(
+                            <div
+                                className="w-270 h-245 bg-white shadow-3xl rounded-lg relative flex flex-col"
+                                {...layerProps}
+                            >
+                                {data && (
+                                    <MapCard
+                                        rounded="true"
+                                        propertyId={propertyId}
+                                        data={data}
+                                        error={error}
+                                    />
+                                )}
+                            </div>
+                        )}
                 </>
             ) : (
                 <>
