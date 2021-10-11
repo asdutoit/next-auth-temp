@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useRef } from 'react';
 
 const UserContext = createContext({
     favs: [],

@@ -20,6 +20,7 @@
     "google-map-react": "^2.1.10",
     "hash": "^0.2.1",
     "little-state-machine": "^4.1.2",
+    "lodash.isequal": "^4.5.0",
     "mongodb": "^3.6.10",
     "next": "^11.1.2",
     "next-auth": "^3.27.3",
@@ -40,6 +41,7 @@
     "use-supercluster": "^0.3.0"
   },
   "devDependencies": {
+    "@welldone-software/why-did-you-render": "^6.2.1",
     "autoprefixer": "^10.2.6",
     "postcss": "^8.3.5",
     "tailwindcss": "^2.2.4"

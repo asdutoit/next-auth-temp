@@ -11,6 +11,16 @@ const userReducer = (state, { type, payload }) => {
                     favs: [...payload],
                 };
             }
+        case 'MAPREF':
+            return {
+                ...state,
+                mapRef: payload,
+            };
+        case 'MAPSREF':
+            return {
+                ...state,
+                mapsRef: payload,
+            };
         default:
             return state;
     }

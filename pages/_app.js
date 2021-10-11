@@ -1,3 +1,4 @@
+// import '../scripts/wdyr';
 import React, { useContext, useReducer } from 'react';
 import { Provider as AuthProvider } from 'next-auth/client';
 import Layout from '../components/Layout/Layout';

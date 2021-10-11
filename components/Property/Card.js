@@ -8,6 +8,8 @@ import { useQueryClient, useMutation } from 'react-query';
 import { classNames } from '../../utils/general';
 import { UserContext } from '../../context/Context';
 import NewPhotoSlider from './NewPhotoSlider';
+import useWhyDidYouUpdate from '../../utils/useWhyDidYouUpdate';
+import { isEqual } from 'lodash';
 
 const updater = async (propertyId) => {
     // Updates the user object
@@ -16,18 +18,15 @@ const updater = async (propertyId) => {
 };
 
 function areEqual(prevProps, nextProps) {
-    if (prevProps.property === nextProps.property) {
+    // console.log('CARD PROPS CHECK', isEqual(prevProps, nextProps));
+    if (isEqual(prevProps, nextProps)) {
         return true; // props are equal
     }
     return false; // props are not equal -> update the component
 }
 
-export default memo(function Card({
-    property,
-    mapRef,
-    rounded,
-    onMap = false,
-}) {
+export default function Card(props) {
+    const { property, mapRef, rounded, onMap = false } = props;
     const { state, dispatch } = useContext(UserContext);
     const [favHover, setFavHover] = useState(false);
     const [shareHover, setShareHover] = useState(false);
@@ -37,6 +36,8 @@ export default memo(function Card({
     const [saving, setSaving] = useState(false);
     const queryClient = useQueryClient();
     const price = numFormatter(property.community.price_max);
+
+    // useWhyDidYouUpdate('Card', props);
 
     const mutation = useMutation(
         (propertyId) => axios.post(`/api/property/${propertyId}/fav`),
@@ -301,7 +302,6 @@ export default memo(function Card({
             </div>
         </div>
     );
-},
-areEqual);
+}
 
 // export default memo(Card, areEqual);

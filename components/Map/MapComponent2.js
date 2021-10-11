@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useContext } from 'react';
 import GoogleMapReact from 'google-map-react';
 import { useLocalState } from '../../utils/useLocalState';
 import { Drawing } from '../../components/maputils/Drawing';
@@ -8,6 +8,7 @@ import MapMarker from '../Markers/MapMarker';
 import { classNames } from '../../utils/general';
 import MarkerListComponent from '../Markers/MarkerListComponent';
 import { getViewportProperties } from '../../utils/queries';
+import { UserContext } from '../../context/Context';
 
 function createMapOptions(maps) {
     return {
@@ -37,9 +38,7 @@ const renderMultiListingComponent = (points, isdragging) => {
     );
 };
 
-export default function MapComponent2({
-    mapRef,
-    mapsRef,
+function MapComponent2({
     polygonRef,
     setViewport,
     isHighlighted,
@@ -47,6 +46,8 @@ export default function MapComponent2({
     draw,
     setDraw,
 }) {
+    const { state, dispatch } = useContext(UserContext);
+    const { mapRef, mapsRef } = state;
     const [markers, setMarkers] = useState([]);
     const [points, setPoints] = useState([]);
     const [bounds, setBounds] = useState(null);
@@ -54,8 +55,8 @@ export default function MapComponent2({
     const [busyDrawing, setBusyDrawing] = useState(false);
     const [isdragging, setIsdragging] = useState(false);
     const [value, setValue] = useLocalState('viewport', {
-        lat: 24.701627,
-        lng: -79.026432,
+        lat: 40.76404679654128,
+        lng: -73.98404035271004,
     });
     const [maploaded, setMapLoaded] = useState(false);
     const unClusteredProperties = [];
@@ -262,3 +263,7 @@ export default function MapComponent2({
         </>
     );
 }
+
+// MapComponent2.whyDidYouRender = true;
+
+export default memo(MapComponent2);

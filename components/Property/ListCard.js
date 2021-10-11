@@ -1,10 +1,16 @@
 import React, { memo } from 'react';
+import { isEqual } from 'lodash';
 
-export default memo(function ListCard({
-    property,
-    setIsHighlighted,
-    children,
-}) {
+function areEqual(prevProps, nextProps) {
+    console.log('LISTCARD PROPS CHECK', isEqual(prevProps, nextProps));
+    if (isEqual(prevProps, nextProps)) {
+        return true; // props are equal
+    }
+    return false; // props are not equal -> update the component
+}
+
+export default memo(function ListCard(props) {
+    const { property, setIsHighlighted, children } = props;
     return (
         <div
             className="relative transition duration-300 transform hover:scale-105 hover:shadow-md"
@@ -32,7 +38,7 @@ export default memo(function ListCard({
             {children}
         </div>
     );
-});
+}, areEqual);
 
 {
     /* <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

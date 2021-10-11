@@ -10,6 +10,7 @@ import { dehydrate } from 'react-query/hydration';
 import { UserContext } from '../context/Context';
 import { getFavourites } from '../utils/queries';
 import Pagination from '../components/List/Pagination';
+import useWhyDidYouUpdate from '../utils/useWhyDidYouUpdate';
 
 const defaultProperty = {
     property_id: '',
@@ -19,28 +20,29 @@ const defaultProperty = {
 };
 
 export default function buy() {
-    const { dispatch } = useContext(UserContext);
+    const { state, dispatch } = useContext(UserContext);
     const mapRef = useRef();
     const mapsRef = useRef();
     const polygonRef = useRef();
-    const [currentLocation, setCurrentLocation] = useState(null);
-    const [isHighlighted, setIsHighlighted] = useState(defaultProperty);
-    const [viewport, setViewport] = useState(null);
-    const [properties, setProperties] = useState([]);
+    const [currentLocation, setCurrentLocation] = useState(null); // FIXME: Move to global state
+    const [isHighlighted, setIsHighlighted] = useState(defaultProperty); // FIXME: Move to global state
+    const [viewport, setViewport] = useState(null); // FIXME: Move to global state
+    const [properties, setProperties] = useState([]); // FIXME: Move to global state
     const [count, setCount] = useState(0);
-    const [draw, setDraw] = useState(false);
+    const [draw, setDraw] = useState(false); // FIXME: Move to global state
     let skip = 0;
     let limit = 20;
 
     //TODO: Move some state to global state.   Too many props being shared.   No need for prop drilling
 
-    useQuery('favourites', getFavourites, {
-        onSuccess: (o) => {
+    const { refetch } = useQuery('favourites', getFavourites, {
+        onSuccess: (favourites) => {
             dispatch({
                 type: 'FAV_UPDATE',
-                payload: o.favourites,
+                payload: favourites.favourites,
             });
         },
+        enabled: false,
     });
 
     useEffect(() => {
@@ -62,6 +64,15 @@ export default function buy() {
             setCurrentLocation({ lat: coords.lat, lng: coords.lng });
             // mapRef.current = map;
         }
+        refetch();
+        dispatch({
+            type: 'MAPREF',
+            payload: mapRef,
+        });
+        dispatch({
+            type: 'MAPSREF',
+            payload: mapsRef,
+        });
     }, []);
 
     // if (isLoading) return 'Loading...';
@@ -80,8 +91,6 @@ export default function buy() {
                     <MapComponent2
                         setViewport={setViewport}
                         isHighlighted={isHighlighted}
-                        mapRef={mapRef}
-                        mapsRef={mapsRef}
                         polygonRef={polygonRef}
                         setProperties={setProperties}
                         draw={draw}
