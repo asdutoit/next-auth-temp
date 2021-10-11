@@ -56,7 +56,7 @@ function MapComponent2({
     const [isdragging, setIsdragging] = useState(false);
     const [value, setValue] = useLocalState('viewport', {
         lat: 40.76404679654128,
-        lng: -73.98404035271004,
+        lng: -73.98404035271005,
     });
     const [maploaded, setMapLoaded] = useState(false);
     const unClusteredProperties = [];
@@ -172,7 +172,7 @@ function MapComponent2({
                 options={createMapOptions}
                 yesIWantToUseGoogleMapApiInternals
                 onGoogleApiLoaded={onMapLoad}
-                defaultZoom={12}
+                defaultZoom={10}
                 center={value}
                 onChange={({ center, zoom, bounds }) =>
                     onBoundsChanged(center, zoom, bounds)
