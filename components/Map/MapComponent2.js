@@ -163,6 +163,9 @@ function MapComponent2({
                 setDraw={setDraw}
                 type="rent" // rent or buy
             />
+            <div className="sidebar">
+                Longitude: {value.lng} | Latitude: {value.lat} | Zoom: {zoom}
+            </div>
             <GoogleMapReact
                 bootstrapURLKeys={{
                     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API,
@@ -239,6 +242,7 @@ function MapComponent2({
                                 {/* MARKER */}
                                 <MapMarker
                                     text={cluster.properties.propertyPrice}
+                                    propertyId={cluster.properties.propertyId}
                                     conditionalClass={isHighlighted._id}
                                     clusterId={cluster.properties.propertyId}
                                     currency={'R'}

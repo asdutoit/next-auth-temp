@@ -3,5 +3,6 @@
     "editor.lineHeight": 38,
     "prettier.tabWidth": 4,
     "prettier.singleQuote": true,
-    "editor.fontFamily": "'Operator Mono',Menlo, Monaco, 'Courier New', monospace"
+    "editor.fontFamily": "'Operator Mono',Menlo, Monaco, 'Courier New', monospace",
+    "workbench.colorTheme": "ReUI Mirage (react)"
 }
