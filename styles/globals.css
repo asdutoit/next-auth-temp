@@ -157,8 +157,8 @@ body {
     font-family: monospace;
     z-index: 1;
     position: absolute;
-    top: 0;
+    top: 47px;
     left: 0;
-    margin: 12px;
+    margin: 10px;
     border-radius: 4px;
 }

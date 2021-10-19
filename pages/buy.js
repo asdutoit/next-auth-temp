@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 import Head from 'next/head';
 import ListComponent from '../components/List/ListComponent';
-import MapComponent2 from '../components/Map/MapComponent2';
+import MapComponent from '../components/Map/MapComponent';
 // import { connectToDatabase } from '../utils/mongodb';
 import { isBrowser } from 'react-device-detect';
 // import { ObjectId } from 'mongodb';
@@ -88,7 +88,7 @@ export default function buy() {
             </Head>
             <div className="flex h-full flex-row buy-rent ">
                 <div className="flex-grow h-full overflow-auto relative">
-                    <MapComponent2
+                    <MapComponent
                         setViewport={setViewport}
                         isHighlighted={isHighlighted}
                         polygonRef={polygonRef}
@@ -106,7 +106,9 @@ export default function buy() {
                         <div className="list__results__section ">
                             <div className="list__results">
                                 {/* <div style={{ height: '100%' }}> */}
-                                {mapsRef.current && (
+
+                                {/* {mapsRef.current && (
+                                    //FIXME: SERIOUS PERFORMANCE ISSUE
                                     <ListComponent
                                         viewport={viewport}
                                         setIsHighlighted={setIsHighlighted}
@@ -118,7 +120,7 @@ export default function buy() {
                                         limit={limit}
                                         skip={skip}
                                     />
-                                )}
+                                )} */}
                                 {/* </div> */}
                             </div>
 

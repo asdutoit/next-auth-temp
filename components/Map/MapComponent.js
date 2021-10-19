@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useContext } from 'react';
 import GoogleMapReact from 'google-map-react';
 import { useLocalState } from '../../utils/useLocalState';
-import { Drawing } from '../../components/maputils/Drawing';
+import { Drawing } from '../maputils/Drawing';
 import useSupercluster from 'use-supercluster';
 import MarkerComponent from '../Markers/MarkerComponent';
 import MapMarker from '../Markers/MapMarker';
@@ -18,6 +18,7 @@ function createMapOptions(maps) {
         clickableIcons: false,
         drawing: true,
         fullscreenControl: false,
+        mapId: '90cf71223580feda',
     };
 }
 
@@ -38,7 +39,7 @@ const renderMultiListingComponent = (points, isdragging) => {
     );
 };
 
-function MapComponent2({
+function MapComponent({
     polygonRef,
     setViewport,
     isHighlighted,
@@ -268,6 +269,6 @@ function MapComponent2({
     );
 }
 
-// MapComponent2.whyDidYouRender = true;
+// MapComponent.whyDidYouRender = true;
 
-export default memo(MapComponent2);
+export default MapComponent;
