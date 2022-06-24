@@ -18,7 +18,6 @@ function createMapOptions(maps) {
         clickableIcons: false,
         drawing: true,
         fullscreenControl: false,
-        mapId: '9dfgd',
     };
 }
 
