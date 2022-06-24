@@ -18,7 +18,7 @@ function createMapOptions(maps) {
         clickableIcons: false,
         drawing: true,
         fullscreenControl: false,
-        mapId: '90cf71223580feda',
+        mapId: '9dfgd',
     };
 }
 
